@@ -22,7 +22,7 @@ def create_app(run_mode):
     :return:
     """
     
-    app = Flask(__name__)
+    app = Flask("ApiOnlineHotelCom")
 
     # 根据配置模式的名字获取配置参数的类
     app.config.from_object(Settings.get_setting(run_mode))

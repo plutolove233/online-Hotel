@@ -37,4 +37,7 @@ def init_router(app):
     # user blueprint register
     from api_1_0.userResource import user_blueprint
     app.register_blueprint(user_blueprint, url_prefix="/api_1_0")
-    
+
+    # login blueprint register
+    from api_1_0.apiLoginResource import login_blueprint
+    app.register_blueprint(login_blueprint, url_prefix='/api_1_0')

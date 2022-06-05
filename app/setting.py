@@ -54,3 +54,5 @@ class Settings(object):
 
         return cls
 
+
+site = Settings.get_setting('develop')
