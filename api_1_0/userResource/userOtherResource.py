@@ -7,10 +7,11 @@ from werkzeug.exceptions import BadRequest
 from utils import commons
 from utils.generate_id import GenerateID
 from service.userService import UserService
+from utils.myLogging import logger
 from utils.response_code import RET, error_map_EN
 
 
-class RegisterResource(Resource):
+class UserRegisterResource(Resource):
 	@classmethod
 	def post(cls):
 		parser = reqparse.RequestParser()
@@ -23,12 +24,14 @@ class RegisterResource(Resource):
 
 			res = UserService.get(Phone=kwargs.get("Phone"))
 			if res.get("code") != RET.OK:
+				logger.error(error_map_EN(res.get("code")))
 				return jsonify({
 					"code":res.get("code"),
 					"error":res.get("data").get("error"),
 					"message":res.get("message"),
 				})
 			if res.get("totalCount") != 0:
+				logger.error(error_map_EN(RET.DATAEXIST))
 				return jsonify({
 					"code":RET.DATAEXIST,
 					"error":error_map_EN[RET.DATAEXIST],
