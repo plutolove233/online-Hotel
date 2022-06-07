@@ -170,3 +170,13 @@ def tree(data, root, root_field, node_field):
                 children.append(j)
         i['Children'] = children
     return l
+
+
+def to_dict_by_Model(data:list, model:list):
+    res = []
+    for x in data:
+        item = {}
+        for y in model:
+            item[y] = x[y]
+        res.append(item)
+    return res

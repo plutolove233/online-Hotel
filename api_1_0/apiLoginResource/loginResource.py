@@ -49,7 +49,7 @@ class LoginResource(Resource):
             else:
                 logger.error('userType值不正确')
             if res.get("code") != RET.OK:
-                logger.error(res.get("message"))
+                logger.error(res.get("data").get("error"))
                 return jsonify({
                     "code": res.get("code"),
                     "error": res.get("data").get("error"),
