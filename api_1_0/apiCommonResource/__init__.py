@@ -12,6 +12,8 @@ This is function description
 
 from flask import Blueprint
 
-login_blueprint = Blueprint('login',__name__)
+login_blueprint = Blueprint('login', __name__)
+sendEmail_blueprint = Blueprint('send_email', __name__)
+changePwd_blueprint = Blueprint('change_pwd', __name__)
 
 from . import urls

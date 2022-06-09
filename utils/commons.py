@@ -5,6 +5,7 @@
  some common tools or fuctions your api project maybe need!
 """
 
+import random
 from werkzeug.routing import BaseConverter
 from datetime import datetime as cdatetime
 from datetime import date, time
@@ -180,3 +181,13 @@ def to_dict_by_Model(data:list, model:list):
             item[y] = x[y]
         res.append(item)
     return res
+
+
+def make_verify_code():
+    code = ''
+    for i in range(8):
+        n = random.randint(0, 9)
+        b = chr(random.randint(65, 90))
+        s = chr(random.randint(97, 122))
+        code += str(random.choice([n, b, s]))
+    return code

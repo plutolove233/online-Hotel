@@ -20,8 +20,8 @@ app = create_app("develop")
 # 通过Flask-Script的Manager,Server接管Flask运行
 manager = Manager(app)
 
-# 开启Debug模式
-manager.add_command("runserver", Server(use_debugger=True))
+# 关闭Debug模式
+manager.add_command("runserver", Server(use_debugger=False))
 
 
 # 创建全站拦截器,每个请求之前做处理
