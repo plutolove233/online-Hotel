@@ -14,7 +14,6 @@ class Room(db.Model):
     HotelID = db.Column(db.BigInteger, info='酒店id')
     RoomNum = db.Column(db.String(20), info='房间号')
     RoomTypeID = db.Column(db.BigInteger, info='房间种类id')
-    RoomBrief = db.Column(db.String(255), info='房间简介')
     RoomStatus = db.Column(db.Integer, server_default=db.FetchedValue(), info='0---空闲，1---占用')
     IsDeleted = db.Column(db.Integer, server_default=db.FetchedValue(), info='0--未删除，1--删除')
     CreateTime = db.Column(db.DateTime, server_default=db.FetchedValue(), info='创建时间')

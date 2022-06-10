@@ -19,6 +19,7 @@ class Hotel(db.Model):
     Province = db.Column(db.String(255), info='酒店所在省')
     City = db.Column(db.String(255), info='酒店所在市')
     Area = db.Column(db.String(255), info='酒店所在区')
+    Address = db.Column(db.String(255), info='酒店所在地址')
     HotelPicUrl = db.Column(db.String(255), info='酒店图片地址')
     HotelLabels = db.Column(db.String(255), info="酒店标签，用'/‘隔开")
     HotelDist = db.Column(db.Float, info='酒店离市中心距离')

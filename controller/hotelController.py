@@ -32,6 +32,7 @@ class HotelController(Hotel):
                 Province=kwargs.get('Province'),
                 City=kwargs.get('City'),
                 Area=kwargs.get('Area'),
+                Address=kwargs.get('Address'),
                 HotelPicUrl=kwargs.get('HotelPicUrl'),
                 HotelLabels=kwargs.get('HotelLabels'),
                 HotelDist=kwargs.get('HotelDist'),
@@ -76,6 +77,8 @@ class HotelController(Hotel):
                     filter_list.append(cls.City == kwargs.get('City'))
                 if kwargs.get('Area'):
                     filter_list.append(cls.Area == kwargs.get('Area'))
+                if kwargs.get('Address'):
+                    filter_list.append(cls.Address == kwargs.get('Address'))
                 if kwargs.get('HotelPicUrl'):
                     filter_list.append(cls.HotelPicUrl == kwargs.get('HotelPicUrl'))
                 if kwargs.get('HotelLabels'):
@@ -130,6 +133,8 @@ class HotelController(Hotel):
                     filter_list.append(cls.City == kwargs.get('City'))
                 if kwargs.get('Area'):
                     filter_list.append(cls.Area == kwargs.get('Area'))
+                if kwargs.get('Address'):
+                    filter_list.append(cls.Address == kwargs.get('Address'))
                 if kwargs.get('HotelPicUrl'):
                     filter_list.append(cls.HotelPicUrl == kwargs.get('HotelPicUrl'))
                 if kwargs.get('HotelLabels'):
@@ -207,6 +212,7 @@ class HotelController(Hotel):
                 Province=param_dict.get('Province'),
                 City=param_dict.get('City'),
                 Area=param_dict.get('Area'),
+                Address=param_dict.get('Address'),
                 HotelPicUrl=param_dict.get('HotelPicUrl'),
                 HotelLabels=param_dict.get('HotelLabels'),
                 HotelDist=param_dict.get('HotelDist'),

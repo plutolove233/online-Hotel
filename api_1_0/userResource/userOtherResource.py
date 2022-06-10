@@ -41,7 +41,7 @@ class UserRegisterResource(Resource):
 				})
 
 			kwargs['UserID'] = int(GenerateID.create_random_id())
-			kwargs['FaceUrl'] = 'user/default.jpg'
+			kwargs['FaceUrl'] = 'http://api.onlineHotel.com/static/user/default.jpg'
 			kwargs = commons.put_remove_none(**kwargs)
 			res = UserService.add(**kwargs)
 			if res.get("code") != RET.OK:

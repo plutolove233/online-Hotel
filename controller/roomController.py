@@ -26,7 +26,6 @@ class RoomController(Room):
                 HotelID=kwargs.get('HotelID'),
                 RoomNum=kwargs.get('RoomNum'),
                 RoomTypeID=kwargs.get('RoomTypeID'),
-                RoomBrief=kwargs.get('RoomBrief'),
                 RoomStatus=kwargs.get('RoomStatus'),
                 CreateTime=kwargs.get('CreateTime'),
                 
@@ -61,8 +60,6 @@ class RoomController(Room):
                     filter_list.append(cls.RoomNum == kwargs.get('RoomNum'))
                 if kwargs.get('RoomTypeID') is not None:
                     filter_list.append(cls.RoomTypeID == kwargs.get('RoomTypeID'))
-                if kwargs.get('RoomBrief'):
-                    filter_list.append(cls.RoomBrief == kwargs.get('RoomBrief'))
                 if kwargs.get('RoomStatus') is not None:
                     filter_list.append(cls.RoomStatus == kwargs.get('RoomStatus'))
                 if kwargs.get('CreateTime'):
@@ -105,8 +102,6 @@ class RoomController(Room):
                     filter_list.append(cls.RoomNum == kwargs.get('RoomNum'))
                 if kwargs.get('RoomTypeID') is not None:
                     filter_list.append(cls.RoomTypeID == kwargs.get('RoomTypeID'))
-                if kwargs.get('RoomBrief'):
-                    filter_list.append(cls.RoomBrief == kwargs.get('RoomBrief'))
                 if kwargs.get('RoomStatus') is not None:
                     filter_list.append(cls.RoomStatus == kwargs.get('RoomStatus'))
                 if kwargs.get('CreateTime'):
@@ -173,7 +168,6 @@ class RoomController(Room):
                 HotelID=param_dict.get('HotelID'),
                 RoomNum=param_dict.get('RoomNum'),
                 RoomTypeID=param_dict.get('RoomTypeID'),
-                RoomBrief=param_dict.get('RoomBrief'),
                 RoomStatus=param_dict.get('RoomStatus'),
                 CreateTime=param_dict.get('CreateTime'),
                 
