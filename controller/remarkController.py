@@ -24,6 +24,7 @@ class RemarkController(Remark):
             model = Remark(
                 RemarkID=kwargs.get('RemarkID'),
                 RemarkContent=kwargs.get('RemarkContent'),
+                HotelID=kwargs.get('HotelID'),
                 RemarkUserID=kwargs.get('RemarkUserID'),
                 CreateTime=kwargs.get('CreateTime'),
                 
@@ -54,6 +55,8 @@ class RemarkController(Remark):
             else:
                 if kwargs.get('RemarkContent'):
                     filter_list.append(cls.RemarkContent == kwargs.get('RemarkContent'))
+                if kwargs.get('HotelID') is not None:
+                    filter_list.append(cls.HotelID == kwargs.get('HotelID'))
                 if kwargs.get('RemarkUserID') is not None:
                     filter_list.append(cls.RemarkUserID == kwargs.get('RemarkUserID'))
                 if kwargs.get('CreateTime'):
@@ -92,6 +95,8 @@ class RemarkController(Remark):
             else:
                 if kwargs.get('RemarkContent'):
                     filter_list.append(cls.RemarkContent == kwargs.get('RemarkContent'))
+                if kwargs.get('HotelID') is not None:
+                    filter_list.append(cls.HotelID == kwargs.get('HotelID'))
                 if kwargs.get('RemarkUserID') is not None:
                     filter_list.append(cls.RemarkUserID == kwargs.get('RemarkUserID'))
                 if kwargs.get('CreateTime'):
@@ -156,6 +161,7 @@ class RemarkController(Remark):
             model = Remark(
                 RemarkID=param_dict.get('RemarkID'),
                 RemarkContent=param_dict.get('RemarkContent'),
+                HotelID=param_dict.get('HotelID'),
                 RemarkUserID=param_dict.get('RemarkUserID'),
                 CreateTime=param_dict.get('CreateTime'),
                 

@@ -14,44 +14,44 @@ from utils.generate_id import GenerateID
 
 
 class AddRoomResource(Resource):
-	@classmethod
-	@TokenRequire
-	def post(cls):
-		parser = reqparse.RequestParser()
-		parser.add_argument("RoomNum", location="form", type=str, required=True)
-		parser.add_argument("RoomTypeID", location="form", type=int, required=True)
-		try:
-			temp = flask.g.user
-			if temp.userType == 0:
-				return jsonify({
-					"code": RET.ROLEERR,
-					"message": "用户无法访问此功能",
-				})
+    @classmethod
+    @TokenRequire
+    def post(cls):
+        parser = reqparse.RequestParser()
+        parser.add_argument("RoomNum", location="form", type=str, required=True)
+        parser.add_argument("RoomTypeID", location="form", type=int, required=True)
+        try:
+            temp = flask.g.user
+            if temp.userType == 0:
+                return jsonify({
+                    "code": RET.ROLEERR,
+                    "message": "用户无法访问此功能",
+                })
 
-			data = parser.parse_args()
-			data['RoomID'] = int(GenerateID.create_random_id())
-			data['HotelID'] = temp.userId
+            data = parser.parse_args()
+            data['RoomID'] = int(GenerateID.create_random_id())
+            data['HotelID'] = temp.userId
 
-			res = RoomService.add(**data)
-			if res.get("code") != RET.OK:
-				logger.error(res.get("data").get("error"))
-				return jsonify({
-					"code": res.get("code"),
-					"error": res.get("data").get("error"),
-					"message": res.get("message")
-				})
+            res = RoomService.add(**data)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get("error"))
+                return jsonify({
+                    "code": res.get("code"),
+                    "error": res.get("data").get("error"),
+                    "message": res.get("message")
+                })
 
-			logger.info("add room success")
-			return jsonify({
-				"code": RET.OK,
-				"message": "添加房间信息成功",
-				"data": data,
-			})
+            logger.info("add room success")
+            return jsonify({
+                "code": RET.OK,
+                "message": "添加房间信息成功",
+                "data": data,
+            })
 
-		except BadRequest as e:
-			logger.error(str(e))
-			return jsonify({
-				"code": RET.PARAMERR,
-				"error": str(e),
-				"message": "获取请求参数失败"
-			})
+        except BadRequest as e:
+            logger.error(str(e))
+            return jsonify({
+                "code": RET.PARAMERR,
+                "error": str(e),
+                "message": "获取请求参数失败"
+            })

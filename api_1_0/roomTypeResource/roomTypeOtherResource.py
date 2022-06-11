@@ -42,7 +42,7 @@ class AddRoomTypeResource(Resource):
             filename = secure_filename(data.get("pic").filename)
             x = filename.split(".")
             save_name = f"{data['RoomTypeID']}.{x[-1]}"
-            data['RoomPicUrl'] = "http://api.onlineHotel.com/roomType/" + save_name
+            data['RoomPicUrl'] = "http://api.onlineHotel.com/static/roomType/" + save_name
             data.get("pic").save(os.path.join("./static/roomType", save_name))
             del data['pic']
 
