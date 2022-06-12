@@ -110,7 +110,7 @@ class UserQueryHotelResource(Resource):
 
             dataParser = ['Province', 'City', 'Area', 'HotelID', 'HotelName', 'Phone', 'HotelLabels', 'HotelDist',
                           'HotelPicUrl']
-            data = commons.to_dict_by_Model(res.get("data"), dataParser)
+            data = commons.data_screen_by_list(res.get("data"), dataParser)
 
             logger.info(f"query {kwargs.get('Province')}-{kwargs.get('City')}-{kwargs.get('Area')} success")
             return jsonify({
@@ -134,14 +134,24 @@ class UserQueryHotelResource(Resource):
             })
 
 
-class GetHotelDetails(Resource):
+class GetHotelDetailsResource(Resource):
     @classmethod
     def get(cls):
         parser = reqparse.RequestParser()
         parser.add_argument("HotelID", location="json", type=int, required=True)
         try:
             data = parser.parse_args()
+            res = HotelService.get_hotel_details(**data)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get("error"))
+                return jsonify({
+                    "code": res.get("code"),
+                    "error": res.get("data").get("error"),
+                    "message": res.get("message"),
+                })
 
+            logger.info("query hotel detail success")
+            return jsonify(res)
         except BadRequest as e:
             logger.error(str(e))
             return jsonify({

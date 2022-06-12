@@ -173,7 +173,7 @@ def tree(data, root, root_field, node_field):
     return l
 
 
-def to_dict_by_Model(data:list, model:list):
+def data_screen_by_list(data:list, model:list):
     res = []
     for x in data:
         item = {}

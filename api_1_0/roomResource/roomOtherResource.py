@@ -55,3 +55,37 @@ class AddRoomResource(Resource):
                 "error": str(e),
                 "message": "获取请求参数失败"
             })
+
+
+class GetRoomInfoResource(Resource):
+    @classmethod
+    def get(cls):
+        parser = reqparse.RequestParser()
+        parser.add_argument("RoomID", type=int, location="json", required=True)
+        try:
+            data = parser.parse_args()
+            res = RoomService.get_room_info(**data)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get("error"))
+                return jsonify({
+                    "code": res.get("code"),
+                    "error": res.get("data").get("error"),
+                    "message": res.get("message")
+                })
+
+            logger.info("query room infomation success")
+            return jsonify(res)
+        except BadRequest as e:
+            logger.error(str(e))
+            return jsonify({
+                "code": RET.PARAMERR,
+                "error": str(e),
+                "message":"获取请求参数失败",
+            })
+        except Exception as e:
+            logger.warning(str(e))
+            return jsonify({
+                "code": RET.UNKOWNERR,
+                "error": str(e),
+                "message": "未知错误",
+            })
