@@ -27,6 +27,7 @@ class OrderFormController(OrderForm):
                 GuestID=kwargs.get('GuestID'),
                 GuestName=kwargs.get('GuestName'),
                 GuestPhone=kwargs.get('GuestPhone'),
+                HotelID=kwargs.get('HotelID'),
                 RoomID=kwargs.get('RoomID'),
                 ArrivalTime=kwargs.get('ArrivalTime'),
                 CheckOutTime=kwargs.get('CheckOutTime'),
@@ -66,6 +67,8 @@ class OrderFormController(OrderForm):
                     filter_list.append(cls.GuestName == kwargs.get('GuestName'))
                 if kwargs.get('GuestPhone'):
                     filter_list.append(cls.GuestPhone == kwargs.get('GuestPhone'))
+                if kwargs.get('HotelID') is not None:
+                    filter_list.append(cls.HotelID == kwargs.get('HotelID'))
                 if kwargs.get('RoomID') is not None:
                     filter_list.append(cls.RoomID == kwargs.get('RoomID'))
                 if kwargs.get('ArrivalTime'):
@@ -116,6 +119,8 @@ class OrderFormController(OrderForm):
                     filter_list.append(cls.GuestName == kwargs.get('GuestName'))
                 if kwargs.get('GuestPhone'):
                     filter_list.append(cls.GuestPhone == kwargs.get('GuestPhone'))
+                if kwargs.get('HotelID') is not None:
+                    filter_list.append(cls.HotelID == kwargs.get('HotelID'))
                 if kwargs.get('RoomID') is not None:
                     filter_list.append(cls.RoomID == kwargs.get('RoomID'))
                 if kwargs.get('ArrivalTime'):
@@ -189,6 +194,7 @@ class OrderFormController(OrderForm):
                 GuestID=param_dict.get('GuestID'),
                 GuestName=param_dict.get('GuestName'),
                 GuestPhone=param_dict.get('GuestPhone'),
+                HotelID=param_dict.get('HotelID'),
                 RoomID=param_dict.get('RoomID'),
                 ArrivalTime=param_dict.get('ArrivalTime'),
                 CheckOutTime=param_dict.get('CheckOutTime'),

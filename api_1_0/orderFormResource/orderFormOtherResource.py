@@ -10,15 +10,20 @@ from werkzeug.exceptions import BadRequest
 
 from middlewares.JwtMiddleware import TokenRequire
 from service.orderFormService import OrderFormService
+from service.roomService import RoomService
 from utils.myLogging import logger
 from utils.response_code import RET
+from utils.generate_id import GenerateID
 
 
-class GetUserOrderFormResource(Resource):
+class GetUserOrderFormInfoResource(Resource):
     @classmethod
     @TokenRequire
     def get(cls):
+        parser = reqparse.RequestParser()
+        parser.add_argument("HotelID", type=int, location="json", required=False)
         try:
+            data = parser.parse_args()
             temp = flask.g.user
             if temp.userType == 1:
                 logger.error("user role error")
@@ -26,22 +31,13 @@ class GetUserOrderFormResource(Resource):
                     "code": RET.ROLEERR,
                     "message": "用户角色错误",
                 })
-            res = OrderFormService.get(UserID=temp.userId)
+            res = OrderFormService.get_order_form_info(UserID=temp.userId, HotelID=data.get("HotelID"))
             if res.get("code") != RET.OK:
-                logger.error(res.get("data").get("error"))
-                return jsonify({
-                    "code": res.get("code"),
-                    "error": res.get("data").get("error"),
-                    "message": res.get("message"),
-                })
-
-            """waiting to complete"""
+                logger.error(res.get("error"))
+                return jsonify(res)
 
             logger.info("query order form success")
-            return jsonify({
-                "code": RET.OK,
-                "message": res.get("data"),
-            })
+            return jsonify(res)
         except Exception as e:
             logger.warning(str(e))
             return jsonify({
@@ -56,15 +52,59 @@ class SubmitOrderFormResource(Resource):
     @TokenRequire
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("GuestName", type=str, location="json", required=True)
-        parser.add_argument("GuestID", type=str, location='json', required=True)
-        parser.add_argument("GuestPhone", type=str, location='json', required=True)
-        parser.add_argument("ArrivalTime",  location='json', required=True)
-        parser.add_argument("CheckOutTime", location='json', required=True)
+        parser.add_argument("GuestName", type=str, location="form", required=True)
+        parser.add_argument("GuestID", type=str, location='form', required=True)
+        parser.add_argument("GuestPhone", type=str, location='form', required=True)
+        parser.add_argument("ArrivalTime", type=str, location='form', required=True)
+        parser.add_argument("CheckOutTime", type=str, location='form', required=True)
+        parser.add_argument("HotelID", type=int, location="form", required=True)
         try:
             temp = flask.g.user
             data = parser.parse_args()
-            print(type(data.get("ArrivalTime")))
+            data["ArrivalTime"] = datetime.datetime.strptime(data.get("ArrivalTime"), "%Y-%m-%d %H:%M:%S")
+            data["CheckOutTime"] = datetime.datetime.strptime(data.get("CheckOutTime"), "%Y-%m-%d %H:%M:%S")
+            data['UserID'] = temp.userId
+            query_rooms = RoomService.get(HotelID=data.get("HotelID"), RoomStatus=0)
+            if query_rooms.get("code") != RET.OK:
+                logger.error(query_rooms.get("data").get("error"))
+                return jsonify({
+                    "code": query_rooms.get("code"),
+                    "error": query_rooms.get("data").get("error"),
+                    "message": query_rooms.get("message"),
+                })
+
+            if query_rooms.get("totalCount") == 0:
+                return jsonify({
+                    "code": RET.NODATA,
+                    "message": "该房间类型没有空闲",
+                })
+            # 分配房间
+            rooms = query_rooms.get("data")
+            data['RoomID'] = rooms[0].get("RoomID")
+            data['OrderFormID'] = int(GenerateID.create_random_id())
+            # 修改房间状态
+            res = RoomService.update(RoomID=data['RoomID'], RoomStatus=1)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get("error"))
+                return jsonify({
+                    "code": res.get("code"),
+                    "error": res.get("data").get("error"),
+                    "message": res.get("message"),
+                })
+
+            res = OrderFormService.add(**data)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get("error"))
+                return jsonify({
+                    "code": res.get("code"),
+                    "error": res.get("data").get("error"),
+                    "message": res.get("message"),
+                })
+            logger.info("submit order_form success")
+            return jsonify({
+                "code": RET.OK,
+                "message": "提交订单成功",
+            })
         except BadRequest as e:
             logger.error(str(e))
             return jsonify({
