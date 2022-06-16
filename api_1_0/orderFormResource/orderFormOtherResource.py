@@ -13,6 +13,7 @@ from service.orderFormService import OrderFormService
 from service.roomService import RoomService
 from utils.myLogging import logger
 from utils.response_code import RET
+from utils.responseParser import ResponseParser
 from utils.generate_id import GenerateID
 
 
@@ -119,3 +120,23 @@ class SubmitOrderFormResource(Resource):
                 "error": str(e),
                 "message": "请求参数缺失"
             })
+
+
+class GetOrderFormListResource(Resource):
+    @classmethod
+    @TokenRequire
+    def get(cls):
+        try:
+            temp = flask.g.user
+            if temp.userType == 1:
+                return jsonify(ResponseParser.parse_role_error())
+            res = OrderFormService.get_order_list(UserID=temp.userId)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("error"))
+                return jsonify(res)
+
+            logger.info(res.get("message"))
+            return jsonify(res)
+        except Exception as e:
+            logger.warning(str(e))
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))

@@ -11,12 +11,12 @@ This is function description
 """
 
 # import module your need
-from utils.response_code import RET
+from utils.response_code import RET, error_map_CN
 
 
 class ResponseParser():
     @classmethod
-    def parse_ok(cls,message, **kwargs):
+    def parse_ok(cls, message, **kwargs):
         if kwargs is not None:
             return {
                 "code": RET.OK,
@@ -26,6 +26,14 @@ class ResponseParser():
         return {
             "code": RET.OK,
             "message": message,
+        }
+
+    @classmethod
+    def parse_list_ok(cls, message, li:list):
+        return {
+            "code": RET.OK,
+            "message": message,
+            "data": li,
         }
 
     @classmethod
@@ -41,4 +49,27 @@ class ResponseParser():
         return {
             "code": RET.NODATA,
             "message": kwargs.get("message")
+        }
+
+    @classmethod
+    def parse_unknown_error(cls, **kwargs):
+        return {
+            "code": RET.UNKOWNERR,
+            "error": kwargs.get("error"),
+            "message": "未知错误",
+        }
+
+    @classmethod
+    def parse_role_error(cls):
+        return {
+            "code": RET.ROLEERR,
+            "message": "用户类型不匹配",
+        }
+
+    @classmethod
+    def parse_db_error(cls, **kwargs):
+        return {
+            "code": RET.DBERR,
+            "error": kwargs.get("error"),
+            "message": error_map_CN[RET.DBERR],
         }
