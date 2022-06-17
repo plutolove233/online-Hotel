@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+import datetime
 import os
 
 import flask
@@ -10,8 +11,10 @@ from werkzeug.exceptions import BadRequest
 from werkzeug.utils import secure_filename
 
 from service.orderFormService import OrderFormService
+from service.roomService import RoomService
 from service.userService import UserService
 from utils import commons
+from utils.calc_time import Calculate
 from utils.myLogging import logger
 from utils.generate_id import GenerateID
 from utils.response_code import RET, error_map_EN
@@ -135,6 +138,16 @@ class OrderFormCheckInResource(Resource):
                 return jsonify(ResponseParser.parse_role_error())
 
             data = parser.parse_args()
+            res = OrderFormService.get(OrderFormID=data.get('OrderFormID'))
+            if res.get('code') != RET.OK:
+                logger.error(res.get('data').get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+            for item in res.get('data'):
+                if Calculate.calc_time_diff_days(datetime.datetime.now(), item.get('ArrivalTime')) > 0:
+                    return jsonify({
+                        "code": RET.REQERR,
+                        "message": '未到预定时间',
+                    })
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=1)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))
@@ -160,6 +173,18 @@ class OrderFormCheckOutResource(Resource):
                 return jsonify(ResponseParser.parse_role_error())
 
             data = parser.parse_args()
+
+            res = OrderFormService.get(OrderFormID=data.get('OrderFormID'))
+            if res.get('code') != RET.OK:
+                logger.error(res.get('data').get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+            orders = res.get('data')
+            for order in orders:
+                res = RoomService.update(RoomID=order.get('RoomID'), RoomStatus=0)
+                if res.get('code') != RET.OK:
+                    logger.error(res.get('data').get('error'))
+                    return jsonify(ResponseParser.parse_res(**res))
+
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=2)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))

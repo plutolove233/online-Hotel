@@ -32,7 +32,7 @@ class HotelService(HotelController):
                 return roomType
             roomType = roomType.get('data')
             for item in roomType:
-                res = RoomService.get(RoomTypeID=item.get('RoomTypeID'))
+                res = RoomService.get(RoomTypeID=item.get('RoomTypeID'), RoomStatus=0)
                 if res.get('code') != RET.OK:
                     return res
                 item['RemainRooms'] = res.get('totalCount')
