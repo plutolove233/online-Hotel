@@ -1,19 +1,26 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import os
+import datetime
 
+import flask
 import werkzeug.datastructures
 from flask_restful import reqparse, Resource
 from flask import jsonify
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import secure_filename
 
+from middlewares.JwtMiddleware import TokenRequire
 from service.hotelService import HotelService
+from service.orderFormService import OrderFormService
+from service.roomService import RoomService
+from service.roomTypeService import RoomTypeService
 from utils import commons
 from utils.commons import put_remove_none
 from utils.generate_id import GenerateID
 from service.userService import UserService
 from utils.myLogging import logger
+from utils.responseParser import ResponseParser
 from utils.response_code import RET, error_map_EN
 
 
@@ -74,18 +81,10 @@ class UserRegisterResource(Resource):
             })
         except BadRequest as e:
             logger.error(str(e))
-            return jsonify({
-                "code": RET.PARAMERR,
-                "error": str(e),
-                "message": "获取请求参数失败",
-            })
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
         except Exception as e:
             logger.warning(str(e))
-            return jsonify({
-                "code": RET.UNKOWNERR,
-                "error": str(e),
-                "message": "未知错误",
-            })
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
 
 
 class UserQueryHotelResource(Resource):
@@ -108,8 +107,18 @@ class UserQueryHotelResource(Resource):
                     "message": res.get("message"),
                 })
 
+            for item in res.get('data'):
+                result = RoomTypeService.get(HotelID=item.get('HotelID'))
+                if result.get("code") != RET.OK:
+                    logger.error(result.get('data').get('error'))
+                    return jsonify(ResponseParser.parse_res(**result))
+                roomType = result.get('data')
+                roomType.sort(key=lambda x: x['Price'])
+                item['HighPrice'] = roomType[-1].get('Price')
+                item['LowPrice'] = roomType[0].get('Price')
+
             dataParser = ['Province', 'City', 'Area', 'HotelID', 'HotelName', 'Phone', 'HotelLabels', 'HotelDist',
-                          'HotelPicUrl']
+                          'HotelPicUrl', 'HighPrice', 'LowPrice']
             data = commons.data_screen_by_list(res.get("data"), dataParser)
 
             logger.info(f"query {kwargs.get('Province')}-{kwargs.get('City')}-{kwargs.get('Area')} success")
@@ -120,18 +129,10 @@ class UserQueryHotelResource(Resource):
             })
         except BadRequest as e:
             logger.error(str(e))
-            return jsonify({
-                "code": RET.PARAMERR,
-                "error": str(e),
-                "message": "获取参数失败",
-            })
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
         except Exception as e:
-            logger.error(str(e))
-            return jsonify({
-                "code": RET.UNKOWNERR,
-                "error": str(e),
-                "message": "未知错误",
-            })
+            logger.warning(str(e))
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
 
 
 class GetHotelDetailsResource(Resource):
@@ -154,15 +155,106 @@ class GetHotelDetailsResource(Resource):
             return jsonify(res)
         except BadRequest as e:
             logger.error(str(e))
-            return jsonify({
-                "code": RET.PARAMERR,
-                "error": str(e),
-                "message": "获取参数失败",
-            })
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
         except Exception as e:
-            logger.error(str(e))
+            logger.warning(str(e))
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
+
+
+class SubmitOrderFormResource(Resource):
+    @classmethod
+    @TokenRequire
+    def post(cls):
+        parser = reqparse.RequestParser()
+        parser.add_argument("GuestName", type=str, location="form", required=True)
+        parser.add_argument("GuestID", type=str, location='form', required=True)
+        parser.add_argument("GuestPhone", type=str, location='form', required=True)
+        parser.add_argument("ArrivalTime", type=str, location='form', required=True)
+        parser.add_argument("CheckOutTime", type=str, location='form', required=True)
+        parser.add_argument("HotelID", type=int, location="form", required=True)
+        parser.add_argument("RoomTypeID", type=int, location='form', required=True)
+        try:
+            temp = flask.g.user
+            data = parser.parse_args()
+            data["ArrivalTime"] = datetime.datetime.strptime(data.get("ArrivalTime"), "%Y-%m-%d %H:%M:%S")
+            data["CheckOutTime"] = datetime.datetime.strptime(data.get("CheckOutTime"), "%Y-%m-%d %H:%M:%S")
+            query_rooms = RoomService.get(HotelID=data.get("HotelID"), RoomStatus=0, RoomTypeID=data.get('RoomTypeID'))
+            if query_rooms.get("code") != RET.OK:
+                logger.error(query_rooms.get("data").get("error"))
+                return jsonify({
+                    "code": query_rooms.get("code"),
+                    "error": query_rooms.get("data").get("error"),
+                    "message": query_rooms.get("message"),
+                })
+
+            guests = data.get('GuestID')
+            phones = data.get('GuestPhone')
+            names = data.get('GuestName')
+            guests = guests.split('/')
+            phones = phones.split('/')
+            names = names.split('/')
+
+            if query_rooms.get("totalCount") < len(guests):
+                return jsonify({
+                    "code": RET.NODATA,
+                    "message": "该房间类型数量不够",
+                })
+
+            rooms = query_rooms.get("data")
+
+            orderFormID = int(GenerateID.create_random_id())
+            order = {
+                'UserID': temp.userId,
+                'HotelID': data.get('HotelID'),
+                'ArrivalTime': data.get('ArrivalTime'),
+                'CheckOutTime': data.get('CheckOutTime'),
+            }
+            for index, guest in enumerate(guests):
+                # 分配房间
+                order['RoomID'] = rooms[index].get("RoomID")
+                order['OrderFormID'] = orderFormID
+                order['GuestID'] = guest
+                order['GuestName'] = names[index]
+                order['GuestPhone'] = phones[index]
+
+                # 修改房间状态
+                res = RoomService.update(RoomID=order['RoomID'], RoomStatus=1)
+                if res.get("code") != RET.OK:
+                    logger.error(res.get("data").get("error"))
+                    return jsonify(ResponseParser.parse_res(**res))
+
+                res = OrderFormService.add(**order)
+                if res.get("code") != RET.OK:
+                    logger.error(res.get("data").get("error"))
+                    return jsonify(ResponseParser.parse_res(**res))
+            logger.info("submit order_form success")
             return jsonify({
-                "code": RET.UNKOWNERR,
-                "error": str(e),
-                "message": "未知错误",
+                "code": RET.OK,
+                "message": "提交订单成功",
             })
+        except BadRequest as e:
+            logger.error(str(e))
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
+        except Exception as e:
+            logger.warning(str(e))
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
+
+
+class GetOrderFormListResource(Resource):
+    @classmethod
+    @TokenRequire
+    def get(cls):
+        try:
+            temp = flask.g.user
+            if temp.userType == 1:
+                return jsonify(ResponseParser.parse_role_error())
+            res = OrderFormService.get_order_list(UserID=temp.userId)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("error"))
+                return jsonify(res)
+
+            logger.info(res.get("message"))
+            return jsonify(res)
+        except Exception as e:
+            logger.warning(str(e))
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))

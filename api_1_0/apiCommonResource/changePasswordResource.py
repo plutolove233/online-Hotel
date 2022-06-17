@@ -11,13 +11,14 @@ This is function description
 """
 
 from flask import jsonify
-from flask_restful import Resource,reqparse
+from flask_restful import Resource, reqparse
 from werkzeug.exceptions import BadRequest
 
 from service.hotelService import HotelService
 from service.userService import UserService
 from utils.myLogging import logger
 from utils.response_code import RET
+from utils.responseParser import ResponseParser
 
 
 class ChangePwdResource(Resource):
@@ -39,25 +40,14 @@ class ChangePwdResource(Resource):
                 res = HotelService.get(Phone=data.get("Phone"))
             else:
                 logger.error("userType value is wrong")
-                return jsonify({
-                    "code": RET.INTERNALERR,
-                    "error": "userType's value is wrong",
-                    "message": "userType值错误",
-                })
+                return jsonify(ResponseParser.parse_res(**res))
 
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get("error"))
-                return jsonify({
-                    "code": res.get("code"),
-                    "error": res.get("data").get("error"),
-                    "message": res.get("message"),
-                })
+                return jsonify(ResponseParser.parse_res(**res))
             if res.get("totalCount") == 0:
                 logger.error('user not exist')
-                return jsonify({
-                    "code": RET.NODATA,
-                    "message": "用户数据不存在",
-                })
+                return jsonify(ResponseParser.parse_no_data(message='用户信息不存在'))
             user = res.get("data")
             if data.get("UserType") == 0:
                 # --- user ---
@@ -67,28 +57,13 @@ class ChangePwdResource(Resource):
                 result = HotelService.update(HotelID=user[0].get("HotelID"), Password=data.get("Password"))
             if result.get("code") != RET.OK:
                 logger.error(result.get("data").get("error"))
-                return jsonify({
-                    "code": result.get("code"),
-                    "error": result.get("data").get("error"),
-                    "message": result.get("message"),
-                })
+                return jsonify(ResponseParser.parse_res(**res))
 
             logger.info("change password success")
-            return jsonify({
-                "code": RET.OK,
-                "message": "密码修改成功",
-            })
+            return jsonify(ResponseParser.parse_ok("密码修改成功"))
         except BadRequest as e:
             logger.error(str(e))
-            return jsonify({
-                "code": RET.PARAMERR,
-                "error": str(e),
-                "message": "获取请求参数失败",
-            })
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
         except Exception as e:
             logger.warning(str(e))
-            return jsonify({
-                "code": RET.UNKOWNERR,
-                "error": str(e),
-                "message": "未知错误",
-            })
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))

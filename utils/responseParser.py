@@ -16,6 +16,14 @@ from utils.response_code import RET, error_map_CN
 
 class ResponseParser():
     @classmethod
+    def parse_param_error(cls, **kwargs):
+        return {
+            'code': RET.PARAMERR,
+            "message": "获取请求参数失败",
+            'error': kwargs.get('error')
+        }
+
+    @classmethod
     def parse_ok(cls, message, **kwargs):
         if kwargs is not None:
             return {
@@ -29,7 +37,7 @@ class ResponseParser():
         }
 
     @classmethod
-    def parse_list_ok(cls, message, li:list):
+    def parse_list_ok(cls, message, li: list):
         return {
             "code": RET.OK,
             "message": message,
@@ -41,7 +49,7 @@ class ResponseParser():
         return {
             "code": kwargs.get("code"),
             "message": kwargs.get("message"),
-            "error": kwargs.get("error"),
+            "error": kwargs.get('data').get("error"),
         }
 
     @classmethod

@@ -9,6 +9,7 @@ from werkzeug.exceptions import BadRequest
 from middlewares.JwtMiddleware import TokenRequire
 from service.remarkService import RemarkService
 from utils.myLogging import logger
+from utils.responseParser import ResponseParser
 from utils.response_code import RET
 from utils.generate_id import GenerateID
 
@@ -46,18 +47,10 @@ class AddRemarkResource(Resource):
 			})
 		except BadRequest as e:
 			logger.error(str(e))
-			return jsonify({
-				"code": RET.PARAMERR,
-				"error": str(e),
-				"message": "获取请求参数失败",
-			})
+			return jsonify(ResponseParser.parse_param_error(error=str(e)))
 		except Exception as e:
 			logger.warning(str(e))
-			return jsonify({
-				"code": RET.UNKOWNERR,
-				"error": str(e),
-				"message": "未知错误",
-			})
+			return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
 
 
 class GetAllRemarkInfoResource(Resource):
@@ -75,18 +68,10 @@ class GetAllRemarkInfoResource(Resource):
 			return jsonify(res)
 		except BadRequest as e:
 			logger.error(str(e))
-			return jsonify({
-				"code": RET.PARAMERR,
-				"error": str(e),
-				"message": "获取请求参数失败",
-			})
+			return jsonify(ResponseParser.parse_param_error(error=str(e)))
 		except Exception as e:
 			logger.warning(str(e))
-			return jsonify({
-				"code": RET.UNKOWNERR,
-				"error": str(e),
-				"message": "未知错误",
-			})
+			return jsonify(ResponseParser.parse_unknown_error(error=str(e)))
 
 
 class DeleteRemarkResource(Resource):
@@ -134,15 +119,7 @@ class DeleteRemarkResource(Resource):
 			})
 		except BadRequest as e:
 			logger.error(str(e))
-			return jsonify({
-				"code": RET.PARAMERR,
-				"error": str(e),
-				"message": "获取请求参数失败",
-			})
+			return jsonify(ResponseParser.parse_param_error(error=str(e)))
 		except Exception as e:
 			logger.warning(str(e))
-			return jsonify({
-				"code": RET.UNKOWNERR,
-				"error": str(e),
-				"message": "未知错误",
-			})
+			return jsonify(ResponseParser.parse_unknown_error(error=str(e)))

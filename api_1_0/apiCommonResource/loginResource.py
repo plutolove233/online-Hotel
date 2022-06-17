@@ -18,6 +18,7 @@ from service.hotelService import HotelService
 from utils.response_code import RET, error_map_EN
 from utils.myLogging import logger
 from utils.jwt import MakeToken
+from utils.responseParser import ResponseParser
 from utils.rsa_encryption_decryption import RSAEncryptionDecryption
 from service.userService import UserService
 
@@ -50,11 +51,7 @@ class LoginResource(Resource):
                 logger.error('userType值不正确')
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get("error"))
-                return jsonify({
-                    "code": res.get("code"),
-                    "error": res.get("data").get("error"),
-                    "message": res.get("message"),
-                })
+                return jsonify(ResponseParser.parse_res(**res))
             user = res.get("data")
             cipher = user[0].get('Password')
             plain = RSAEncryptionDecryption.decrypt(cipher_text=cipher).encode('utf-8').decode()
@@ -79,15 +76,7 @@ class LoginResource(Resource):
 
         except BadRequest as e:
             logger.error(str(e))
-            return jsonify({
-                "code": RET.PARAMERR,
-                "error": str(e),
-                "message": "获取请求参数失败",
-            })
+            return jsonify(ResponseParser.parse_param_error(error=str(e)))
         except Exception as e:
             logger.warning(str(e))
-            return jsonify({
-                "code": RET.UNKOWNERR,
-                "error": str(e),
-                "message": "未知错误",
-            })
+            return jsonify(ResponseParser.parse_unknown_error(error=str(e)))

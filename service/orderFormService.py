@@ -64,37 +64,38 @@ class OrderFormService(OrderFormController):
             if res.get("code") != RET.OK:
                 return ResponseParser.parse_db_error(error=res.get("data").get("error"))
             orders = res.get('data')
-            orders.sort(key=lambda x: x['HotelID'])
-            group_by_hotel = []
-            for hotelID, items in groupby(orders, key=itemgetter('HotelID')):
+            orders.sort(key=lambda x: x['OrderFormID'])
+            group_by_orderForm = []
+            for orderFormID, items in groupby(orders, key=itemgetter('OrderFormID')):
                 items = list(items)
-                res = HotelController.get(HotelID=hotelID)
+                # print(items)
+                res = HotelController.get(HotelID=items[0].get('HotelID'))
                 if res.get("code") != RET.OK:
                     return ResponseParser.parse_db_error(error=res.get("data").get("error"))
                 if res.get("totalCount") == 0:
                     continue
                 hotel = res.get("data")
                 data = {
+                    'OrderFormID': orderFormID,
                     "HotelID": hotel[0].get("HotelID"),
                     "HotelName": hotel[0].get("HotelName"),
                     "HotelPicUrl": hotel[0].get("HotelPicUrl"),
                     "ArrivalTime": items[0].get("ArrivalTime"),
                     "OrderFormStatus": items[0].get("OrderFormStatus"),
                     "totalCount": len(items),
-                    "price": cls.calc_user_cost(UserID=kwargs.get("UserID"), HotelID=hotelID).get("data").get(
+                    "price": cls.calc_order_form_cost(OrderFormID=orderFormID).get("data").get(
                         "price")
                 }
-                group_by_hotel.append(data)
-            return ResponseParser.parse_list_ok("获取订单列表成功", group_by_hotel)
+                group_by_orderForm.append(data)
+            return ResponseParser.parse_list_ok("获取订单列表成功", group_by_orderForm)
         except Exception as e:
             return ResponseParser.parse_unknown_error(error=str(e))
 
     @classmethod
-    def calc_user_cost(cls, **kwargs):
+    def calc_order_form_cost(cls, **kwargs):
         try:
-            userID = kwargs.get("UserID")
-            hotelID = kwargs.get("HotelID")
-            res = cls.get(UserID=userID, HotelID=hotelID)
+            orderFormID = kwargs.get("OrderFormID")
+            res = cls.get(OrderFormID=orderFormID)
             if res.get("code") != RET.OK:
                 return ResponseParser.parse_db_error(error=res.get("data").get("error"))
             orders = res.get("data")

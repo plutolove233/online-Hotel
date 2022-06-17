@@ -5,8 +5,9 @@ from sqlalchemy import and_
 from controller.hotelController import HotelController
 from controller.roomTypeController import RoomTypeController
 from service.remarkService import RemarkService
+from service.roomService import RoomService
 from utils import commons
-from utils.response_code import RET,error_map_CN
+from utils.response_code import RET, error_map_CN
 
 
 class HotelService(HotelController):
@@ -16,7 +17,8 @@ class HotelService(HotelController):
             hotel = cls.get(HotelID=kwargs.get("HotelID"))
             if hotel.get("code") != RET.OK:
                 return hotel
-            screener = ['HotelID', 'HotelName', 'Phone', 'Province', 'City', 'Area', 'Address', 'HotelPicUrl', 'HotelLabels']
+            screener = ['HotelID', 'HotelName', 'Phone', 'Province', 'City', 'Area', 'Address', 'HotelPicUrl',
+                        'HotelLabels']
             hotel = hotel.get("data")
             hotel = commons.data_screen_by_list(hotel, screener)
             remark = RemarkService.GetHotelRemark(HotelID=kwargs.get("HotelID"))
@@ -28,21 +30,27 @@ class HotelService(HotelController):
             roomType = RoomTypeController.get(HotelID=kwargs.get("HotelID"))
             if roomType.get("code") != RET.OK:
                 return roomType
+            roomType = roomType.get('data')
+            for item in roomType:
+                res = RoomService.get(RoomTypeID=item.get('RoomTypeID'))
+                if res.get('code') != RET.OK:
+                    return res
+                item['RemainRooms'] = res.get('totalCount')
             res = {
                 "Hotel": hotel[0],
                 "Remark": remark[0],
-                "RoomType": roomType.get("data"),
+                "RoomType": roomType,
             }
             return {
                 "code": RET.OK,
-                "message":"查询成功",
-                "data":res
+                "message": "查询成功",
+                "data": res
             }
         except Exception as e:
             return {
                 "code": RET.DBERR,
                 "data": {
-                    "error":str(e),
+                    "error": str(e),
                 },
                 "message": error_map_CN(RET.DBERR),
             }
