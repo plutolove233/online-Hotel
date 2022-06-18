@@ -5,10 +5,10 @@
 				<div class="big-contain" key="bigContainLogin" v-if="isLogin">
 					<div class="btitle">账户登录</div>
 					<div class="bform">
-						<input type="email" placeholder="邮箱" v-model="form.useremail">
-						<span class="errTips" v-if="emailError">* 邮箱填写错误 *</span>
+						<input type="phuserphone" placeholder="电话号码/酒店账号" v-model="form.userphone">
+						<span class="errTips" v-if="phuserphoneError">* 信息填写错误 *</span>
 						<input type="password" placeholder="密码" v-model="form.userpwd">
-						<span class="errTips" v-if="emailError">* 密码填写错误 *</span>
+						<span class="errTips" v-if="phuserphoneError">* 密码填写错误 *</span>
 					</div>
 					<button class="bbutton" @click="login">登录</button>
 				</div>
@@ -16,22 +16,24 @@
 					<div class="btitle">创建账户</div>
 					<div class="bform">
 						<input type="text" placeholder="用户名" v-model="form.username">
-						<span class="errTips" v-if="existed">* 用户名已经存在！ *</span>
-						<input type="email" placeholder="邮箱" v-model="form.useremail">
+						<span class="errTips" v-if="existed">* 用户已经存在！ *</span>
+						<input type="phuserphone" placeholder="邮箱" v-model="form.userphone">
 						<input type="password" placeholder="密码" v-model="form.userpwd">
 					</div>
 					<button class="bbutton" @click="register">注册</button>
 				</div>
 			</div>
+
 			<div class="small-box" :class="{active:isLogin}">
+
 				<div class="small-contain" key="smallContainRegister" v-if="isLogin">
-					<div class="stitle">你好，朋友!</div>
-					<p class="scontent">开始注册，和我们一起旅行</p>
+					<div class="stitle">您好!</div>
+					<p class="scontent">开始注册，共享云上酒店</p>
 					<button class="sbutton" @click="changeType">注册</button>
 				</div>
 				<div class="small-contain" key="smallContainLogin" v-else>
 					<div class="stitle">欢迎回来!</div>
-					<p class="scontent">与我们保持联系，请登录你的账户</p>
+					<p class="scontent">请登录您的账户</p>
 					<button class="sbutton" @click="changeType">登录</button>
 				</div>
 			</div>
@@ -39,18 +41,40 @@
 	</div>
 </template>
 
+
+  <script lang="ts" setup>
+  
+  import {reactive } from 'vue'
+  
+  // do not use same name with ref
+  const form = reactive({
+	name: '',
+	region: '',
+	date1: '',
+	date2: '',
+	delivery: false,
+	type: [],
+	resource: '',
+	desc: '',
+  })
+  
+  const onSubmit = () => {
+	console.log('submit!')
+  }
+  </script>
+  
 <script>
 	export default{
 		name:'login-register',
 		data(){
 			return {
 				isLogin:false,
-				emailError: false,
+				userError: false,
 				passwordError: false,
 				existed: false,
 				form:{
 					username:'',
-					useremail:'',
+					userphone:'',
 					userpwd:''
 				}
 			}
@@ -59,17 +83,17 @@
 			changeType() {
 				this.isLogin = !this.isLogin
 				this.form.username = ''
-				this.form.useremail = ''
+				this.form.userphone = ''
 				this.form.userpwd = ''
 			},
 			login() {
 				const self = this;
-				if (self.form.useremail != "" && self.form.userpwd != "") {
+				if (self.form.userphone != "" && self.form.userpwd != "") {
 					self.$axios({
 						method:'post',
 						url: 'http://127.0.0.1:10520/api/user/login',
 						data: {
-							email: self.form.useremail,
+							phuserphone: self.form.userphone,
 							password: self.form.userpwd
 						}
 					})
@@ -79,7 +103,7 @@
 								alert("登陆成功！");
 								break;
 							case -1:
-								this.emailError = true;
+								this.phuserphoneError = true;
 								break;
 							case 1:
 								this.passwordError = true;
@@ -95,13 +119,13 @@
 			},
 			register(){
 				const self = this;
-				if(self.form.username != "" && self.form.useremail != "" && self.form.userpwd != ""){
+				if(self.form.username != "" && self.form.userphone != "" && self.form.userpwd != ""){
 					self.$axios({
 						method:'post',
 						url: 'http://127.0.0.1:10520/api/user/add',
 						data: {
 							username: self.form.username,
-							email: self.form.useremail,
+							phuserphone: self.form.userphone,
 							password: self.form.userpwd
 						}
 					})
@@ -128,25 +152,28 @@
 </script>
 
 <style scoped="scoped">
+	
 	.login-register{
 		width: 100vw;
 		height: 100vh;
-		box-sizing: border-box;
+		/* background-image: url(../../image/83960.jpg); */
+		/* box-sizing: border-box; */
 	}
+
 	.contain{
-		width: 60%;
-		height: 60%;
+		width: 70%;
+		height: 70%;
 		position: relative;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%,-50%);
-		background-color: #fff;
-		border-radius: 20px;
-		box-shadow: 0 0 3px #f0f0f0,
-					0 0 6px #f0f0f0;
+		background-color:lightblue;
+		border-radius: 30px;
+		/* box-shadow: 0 0 3px #f0f0f0,
+					0 0 6px #f0f0f0; */
 	}
 	.big-box{
-		width: 70%;
+		width: 50%;
 		height: 100%;
 		position: absolute;
 		top: 0;
@@ -157,15 +184,16 @@
 	.big-contain{
 		width: 100%;
 		height: 100%;
+		/* display: block; */
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 	}
 	.btitle{
-		font-size: 1.5em;
+		font-size: 2em;
 		font-weight: bold;
-		color: rgb(57,167,176);
+		color:white;
 	}
 	.bform{
 		width: 100%;
