@@ -53,7 +53,7 @@ class CancelOrderFormResource(Resource):
                 if Calculate.calc_time_diff_days(datetime.datetime.now(), order.get('ArrivalTime')) < 0:
                     return jsonify({
                         "code": RET.INTERNALERR,
-                        "message": "订单以逾期",
+                        "message": "订单已逾期",
                     })
                 res = RoomService.update(RoomID=order.get('RoomID'), RoomStatus=0)
                 if res.get('code') != RET.OK:

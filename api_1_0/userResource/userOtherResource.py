@@ -176,8 +176,8 @@ class SubmitOrderFormResource(Resource):
         try:
             temp = flask.g.user
             data = parser.parse_args()
-            data["ArrivalTime"] = datetime.datetime.strptime(data.get("ArrivalTime"), "%Y-%m-%d %H:%M:%S")
-            data["CheckOutTime"] = datetime.datetime.strptime(data.get("CheckOutTime"), "%Y-%m-%d %H:%M:%S")
+            data["ArrivalTime"] = datetime.datetime.strptime(data.get("ArrivalTime"), "%Y-%m-%d")
+            data["CheckOutTime"] = datetime.datetime.strptime(data.get("CheckOutTime"), "%Y-%m-%d")
             query_rooms = RoomService.get(HotelID=data.get("HotelID"), RoomStatus=0, RoomTypeID=data.get('RoomTypeID'))
             if query_rooms.get("code") != RET.OK:
                 logger.error(query_rooms.get("data").get("error"))

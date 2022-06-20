@@ -26,7 +26,7 @@ class OrderFormService(OrderFormController):
             orders = res.get("data")
             price = 0
             data = {
-                'OrderFormID': [],
+                'OrderFormID': orders[0].get("OrderFormID"),
                 'EACH_ROOM_INFO': [],
                 'ArrivalTime': orders[0].get("ArrivalTime"),
                 'CheckOutTime': orders[0].get("CheckOutTime")
@@ -50,7 +50,6 @@ class OrderFormService(OrderFormController):
 
                 room_type = res.get("data")
                 price += room_type[0].get("Price")
-                data['OrderFormID'].append(item.get("OrderFormID"))
                 data['EACH_ROOM_INFO'].append(item)
             data['Price'] = price
             return ResponseParser.parse_ok("获取订单信息成功", **data)
