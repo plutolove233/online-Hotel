@@ -74,7 +74,7 @@
             <!-- <small class="m-0">From 3:00 PM</small> -->
           </div>
           <div>
-            <p class="m-0 details-heading">Check-out Date</p>
+            <p class="m-0 details-heading">离店时间</p>
             <p class="m-0 details-body">{{ guestData.checkoutDate }}</p>
             <!-- <small class="m-0">{{ guestData.days }} 待一晚</small> -->
           </div>
@@ -101,7 +101,7 @@
             <p class="m-0 details-heading">房间数</p>
             <p class="m-0 details-body">{{ guestData.room }} 间</p>
           </div>
-          <div>
+          <!-- <div>
             <p class="m-0 details-heading">总价</p>
             <p class="m-0 details-body">
               {{
@@ -109,7 +109,7 @@
                   | dollarSign
               }}
             </p>
-          </div>
+          </div> -->
           <!-- <div>
             <p class="m-0 details-heading">Taxes</p>
             <p class="m-0 details-body">

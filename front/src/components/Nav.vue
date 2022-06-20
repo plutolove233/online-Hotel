@@ -22,10 +22,10 @@
           <li class="nav-item">
             <router-link class="nav-link active" :to="{ name: 'Home' }"
               ><i class="fa fa-bed me-2" aria-hidden="true"></i
-              >Stays</router-link
+              >宾馆</router-link
             >
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'Home' }"
               ><i class="fa fa-plane me-2" aria-hidden="true"></i
               >Flights</router-link
@@ -36,7 +36,7 @@
               ><i class="fa fa-car me-2" aria-hidden="true"></i>Car
               Rentals</router-link
             >
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

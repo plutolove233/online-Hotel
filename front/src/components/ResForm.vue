@@ -11,7 +11,7 @@
               :class="{ 'form-group--error': $v.fname.$error }"
             ></div>
             <label class="form__label" for="fname"
-              >姓<span>*</span></label
+              >姓名<span>*</span></label
             >
             <input
               class="form__input"
@@ -19,19 +19,19 @@
               id="fname"
               type="text"
               name="fname"
-              placeholder="Fatih"
+              placeholder="张三"
               ref="input"
             />
             <div class="error" v-if="!$v.fname.required && $v.fname.$dirty">
-              姓必须填！
+              姓名必须填！
             </div>
             <div class="error" v-if="!$v.fname.minLength">
-              Name must have at least
-              {{ $v.fname.$params.minLength.min }} letters.
+             姓名至少不少于
+              {{ $v.fname.$params.minLength.min }}字 
             </div>
           </div>
           <!-- Last name input area and validations -->
-          <div class="item">
+          <!-- <div class="item">
             <div
               class="form-group"
               :class="{ 'form-group--error': $v.lname.$error }"
@@ -48,34 +48,34 @@
               placeholder="Ozoglu"
             />
             <div class="error" v-if="!$v.lname.required && $v.lname.$dirty">
-              Last name is required
+              名需要填
             </div>
             <div class="error" v-if="!$v.lname.minLength">
               Name must have at least
               {{ $v.lname.$params.minLength.min }} letters.
             </div>
-          </div>
+          </div> -->
           <!-- Age input area and validations -->
           <div class="item">
             <div
               class="form-group"
               :class="{ 'form-group--error': $v.age.$error }"
             >
-              <label class="form__label" for="age">Age<span>*</span></label>
+              <label class="form__label" for="age">年龄<span>*</span></label>
               <input
                 class="form__input"
                 id="age"
                 type="number"
                 name="age"
                 v-model.trim="$v.age.$model"
-                placeholder="Must be older than 6"
+                placeholder="必须大于1岁"
               />
             </div>
             <div class="error" v-if="!$v.age.required && $v.age.$dirty">
-              Age is required
+              年龄必须填
             </div>
             <div class="error" v-if="!$v.age.minValue">
-              Must be older than {{ $v.age.$params.minValue.min }}
+              年龄大于 {{ $v.age.$params.minValue.min }}岁
             </div>
           </div>
           <!-- Sex input area and validations -->
@@ -84,16 +84,16 @@
               class="form-group"
               :class="{ 'form-group--error': $v.sex.$error }"
             ></div>
-            <label class="d-block mb-1" for="sex">Sex<span>*</span></label>
+            <label class="d-block mb-1" for="sex">性别<span>*</span></label>
             <select v-model.trim="$v.sex.$model" name="sex" id="sex">
-              <option value="" disabled selected>Select Your Sex</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
+              <option value="" disabled selected>选择你的性别</option>
+              <option value="male">男</option>
+              <option value="female">女</option>
+              <!-- <option value="other">Other</option> -->
             </select>
 
             <div class="error" v-if="!$v.sex.required && $v.sex.$dirty">
-              Please enter your sex
+              请填你的性别！
             </div>
           </div>
           <!-- T.C. Identity No. input area and validations -->
@@ -102,27 +102,27 @@
               class="form-group"
               :class="{ 'form-group--error': $v.tc.$error }"
             ></div>
-            <label for="tc">Identity No.<span>*</span></label>
+            <label for="tc">身份证号码<span>*</span></label>
             <input
               v-model.trim="$v.tc.$model"
               id="tc"
               type="text"
               name="tc"
-              placeholder="Identity No."
+              placeholder="请输入18位有效身份证号码"
             />
 
             <div class="error" v-if="!$v.tc.required && $v.tc.$dirty">
-              Please enter your identity number
+              请填入你的身份证号码
             </div>
             <div
               class="error"
               v-if="$v.tc.$model !== '' && !$v.tc.identityCheck && $v.tc.$dirty"
             >
-              Please enter a valid identity number
+              请填入有效身份证号码！
             </div>
           </div>
           <!-- HES Code input area and validations -->
-          <div class="item">
+          <!-- <div class="item">
             <div
               class="form-group"
               :class="{ 'form-group--error': $v.hes.$error }"
@@ -144,7 +144,7 @@
             >
               Please enter a valid HES Code
             </div>
-          </div>
+          </div> -->
           <!-- E-mail input area and validations -->
           <div class="item">
             <div
@@ -152,7 +152,7 @@
               :class="{ 'form-group--error': $v.email.$error }"
             ></div>
             <label class="form__label" for="email"
-              >Email Address<span>*</span></label
+              >邮箱<span>*</span></label
             >
             <input
               class="form__input"
@@ -163,10 +163,10 @@
               placeholder="fatihozoglu@yahoo.com"
             />
             <div class="error" v-if="!$v.email.required && $v.email.$dirty">
-              Email is required
+              邮箱必须填
             </div>
             <div class="error" v-if="!$v.email.email">
-              Please enter a valid e-mail adress
+              请填入有效的邮箱地址！
             </div>
           </div>
           <!-- Phone input area and validations -->
@@ -175,7 +175,7 @@
               class="form-group"
               :class="{ 'form-group--error': $v.phone.$error }"
             ></div>
-            <label for="phone">Phone<span>*</span></label>
+            <label for="phone">手机号<span>*</span></label>
             <input
               v-model.trim="$v.phone.$model"
               id="phone"
@@ -184,10 +184,10 @@
               placeholder="5395845151"
             />
             <div class="error" v-if="!$v.phone.required && $v.phone.$dirty">
-              Phone number is required
+              手机号码必须填
             </div>
             <div class="error" v-if="!$v.phone.phoneCheck && $v.phone.$dirty">
-              Please enter a valid phone number
+              请填入有效手机号码
             </div>
           </div>
         </div>
@@ -195,10 +195,10 @@
       <br />
       <!-- Showing "Next Guest" button for forms except the last form item-->
       <button v-if="id !== totalGuests - 1" @click.prevent="checkCompletion">
-        Next Guest
+        下一位客人
       </button>
       <!-- Showing "Go to Payment" button for the last form item to route to /payment Payment view component -->
-      <button v-else @click.prevent="goPayment">Go to Payment</button>
+      <button v-else @click.prevent="goPayment">支付</button>
     </form>
   </div>
 </template>

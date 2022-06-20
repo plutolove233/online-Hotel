@@ -3,9 +3,9 @@
     <h1 class="home-heading mb-0">
       来找酒店！
     </h1>
-    <p class="home-text mb-5">
+    <!-- <p class="home-text mb-5">
       住宅多多
-    </p>
+    </p> -->
     <!-- All inputs are enclosed into input-container -->
     <div class="input-container">
       <input

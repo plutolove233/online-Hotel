@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "element-plus": "^2.2.6",
+    "element-ui": "^2.4.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0"
   },
@@ -19,12 +21,13 @@
     "@vue/cli-plugin-unit-jest": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
     "@vue/test-utils": "^1.0.3",
+    "vue-cli-plugin-element": "~1.0.1",
     "vue-template-compiler": "^2.6.11"
   },
   "proxy": {
     "/*": {
       "target": "http://127.0.0.1:10520",
-      "changeOrigin":true
+      "changeOrigin": true
     }
   }
 }

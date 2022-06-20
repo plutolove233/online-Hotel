@@ -57,14 +57,14 @@
           <h2 class="h5">Guest {{ index + 1 }}</h2>
           <p class="m-0 mb-1">姓: {{ guest.fname }}</p>
           <p class="m-0 mb-1">名: {{ guest.lname }}</p>
-          <p class="m-0 mb-1">Identitiy No.: {{ guest.tc }}</p>
+          <p class="m-0 mb-1">身份证号码: {{ guest.tc }}</p>
           <p class="m-0 mb-1">
             <span class="me-4">性别: {{ guest.sex }}</span>
             <span>岁数: {{ guest.age }}</span>
           </p>
           <p class="m-0 mb-1">邮箱: {{ guest.email }}</p>
           <p class="m-0 mb-1">电话号码: {{ guest.phone }}</p>
-          <p class="m-0 mb-1">HES Code: {{ guest.hes }}</p>
+          <!-- <p class="m-0 mb-1">HES Code: {{ guest.hes }}</p> -->
         </div>
       </div>
     </div>

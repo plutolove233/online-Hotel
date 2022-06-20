@@ -1,4 +1,5 @@
 <template>
+	
 	<div class="login-register">
 		<div class="contain">
 			<div class="big-box" :class="{active:isLogin}">
@@ -16,6 +17,14 @@
 					<div class="btitle">创建账户</div>
 					<div class="bform">
 						<input type="text" placeholder="用户名" v-model="form.username">
+						
+				
+							<el-radio-group v-model="radio">
+							  <el-radio :label="3">Option A</el-radio>
+							  <el-radio :label="6">Option B</el-radio>
+							  <el-radio :label="9">Option C</el-radio>
+							</el-radio-group>
+
 						<span class="errTips" v-if="existed">* 用户已经存在！ *</span>
 						<input type="phuserphone" placeholder="邮箱" v-model="form.userphone">
 						<input type="password" placeholder="密码" v-model="form.userpwd">
@@ -29,6 +38,9 @@
 				<div class="small-contain" key="smallContainRegister" v-if="isLogin">
 					<div class="stitle">您好!</div>
 					<p class="scontent">开始注册，共享云上酒店</p>
+
+						
+					  
 					<button class="sbutton" @click="changeType">注册</button>
 				</div>
 				<div class="small-contain" key="smallContainLogin" v-else>
@@ -43,10 +55,13 @@
 
 
   <script lang="ts" setup>
-  
-  import {reactive } from 'vue'
-  
-  // do not use same name with ref
+					 
+					  
+					  
+			
+  import {reactive ,ref} from 'vue'
+//   import {ref } from 'vue'
+const radio = ref(3)
   const form = reactive({
 	name: '',
 	region: '',

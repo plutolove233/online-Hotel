@@ -31,24 +31,24 @@
       <div class="d-flex justify-content-end">
         <div class="d-flex flex-column">
           <span class="me-2">{{ setRatingText }}</span>
-          <small>652 Reviews</small>
+          <!-- <small>652 Reviews</small> -->
         </div>
         <div class="rating ms-1">{{ hotel.rating }}</div>
       </div>
       <div class="d-flex flex-column align-items-end">
         <small class="ms-auto"
-          >{{ guestData.days }} night, {{ guestData.adult }} adults,
-          {{ guestData.room }} room(s)</small
+          >{{ guestData.days }} 晚, {{ guestData.adult }} 位成人,
+          {{ guestData.room }} 间房</small
         >
         <p class="my-0 h4">
           {{ (hotel.price * guestData.days * guestData.room) | dollarSign }}
         </p>
-        <small>+{{ tax | dollarSign }} taxes and charges</small>
-        <router-link
+        <!-- <small>+{{ tax | dollarSign }} taxes and charges</small> -->
+        <!-- <router-link
           :to="{ name: 'HotelDetails', params: { name: hotelName } }"
           class="book-btn rounded d-block mt-2"
-          >See Availability</router-link
-        >
+          >详情</router-link
+        > -->
       </div>
     </div>
   </div>

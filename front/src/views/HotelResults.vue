@@ -2,7 +2,7 @@
   <div class="main">
     <!-- This part shows the guest preferences based on inputs in home page -->
     <div class="search-area">
-      <h2>搜索</h2>
+      <h2>搜索结果</h2>
       <div class="w-100 mb-1">
         <label> 目的地</label>
         <div class="search-input d-flex align-items-center ps-2">
@@ -75,7 +75,7 @@
         </div>
       </div>
       <router-link :to="{ name: 'Home' }"
-        ><button class="search-btn">查询</button></router-link
+        ><button class="search-btn">返回</button></router-link
       >
     </div>
     <!-- Container for card components -->
