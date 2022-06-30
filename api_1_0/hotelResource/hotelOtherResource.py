@@ -142,6 +142,8 @@ class OrderFormCheckInResource(Resource):
             if res.get('code') != RET.OK:
                 logger.error(res.get('data').get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
+            orders = res.get("data")
+            userId = orders[0].get("UserID")
             for item in res.get('data'):
                 if Calculate.calc_time_diff_days(datetime.datetime.now(), item.get('ArrivalTime')) > 0:
                     return jsonify({
@@ -149,6 +151,11 @@ class OrderFormCheckInResource(Resource):
                         "message": '未到预定时间',
                     })
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=1)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+
+            res = UserService.update(UserID=userId, IsInRoom=1)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
@@ -179,6 +186,7 @@ class OrderFormCheckOutResource(Resource):
                 logger.error(res.get('data').get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
             orders = res.get('data')
+            userId = orders[0].get('UserID')
             for order in orders:
                 res = RoomService.update(RoomID=order.get('RoomID'), RoomStatus=0)
                 if res.get('code') != RET.OK:
@@ -186,6 +194,11 @@ class OrderFormCheckOutResource(Resource):
                     return jsonify(ResponseParser.parse_res(**res))
 
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=2)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+
+            res = UserService.update(UserID=userId, IsInRoom=0)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
