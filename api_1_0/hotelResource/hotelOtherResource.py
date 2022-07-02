@@ -39,7 +39,7 @@ class HotelRegisterResource(Resource):
         parser.add_argument("Password", location="form", type=str, required=True, help="Password参数类型不正确或缺失")
         try:
             data = parser.parse_args()
-            res = HotelService.get(Phone=data.get("Phone"))
+            res = HotelService.get(HotelAccount=data.get("HotelAccount"))
             if res.get("code") != RET.OK:
                 logger.error(error_map_EN(res.get("code")))
                 return jsonify(ResponseParser.parse_res(**res))
