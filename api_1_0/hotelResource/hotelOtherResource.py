@@ -41,18 +41,18 @@ class HotelRegisterResource(Resource):
             data = parser.parse_args()
             res = HotelService.get(HotelAccount=data.get("HotelAccount"))
             if res.get("code") != RET.OK:
-                logger.error(error_map_EN(res.get("code")))
+                logger.error(error_map_EN[res.get("code")])
                 return jsonify(ResponseParser.parse_res(**res))
-
             if res.get("totalCount") != 0:
-                logger.error(error_map_EN(RET.DATAEXIST))
+                logger.error(error_map_EN[RET.DATAEXIST])
                 return jsonify({
                     "code": RET.DATAEXIST,
-                    "error": error_map_EN(RET.DATAEXIST),
+                    "error": error_map_EN[RET.DATAEXIST],
                     "message": "该用户信息已注册",
                 })
 
             data['HotelID'] = int(GenerateID.create_random_id())
+            data['HotelDist'] = 100.0
             data = commons.put_remove_none(**data)
             res = HotelService.add(**data)
             if res.get("code") != RET.OK:
