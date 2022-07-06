@@ -39,20 +39,20 @@ class HotelRegisterResource(Resource):
         parser.add_argument("Password", location="form", type=str, required=True, help="Password参数类型不正确或缺失")
         try:
             data = parser.parse_args()
-            res = HotelService.get(Phone=data.get("Phone"))
+            res = HotelService.get(HotelAccount=data.get("HotelAccount"))
             if res.get("code") != RET.OK:
-                logger.error(error_map_EN(res.get("code")))
+                logger.error(error_map_EN[res.get("code")])
                 return jsonify(ResponseParser.parse_res(**res))
-
             if res.get("totalCount") != 0:
-                logger.error(error_map_EN(RET.DATAEXIST))
+                logger.error(error_map_EN[RET.DATAEXIST])
                 return jsonify({
                     "code": RET.DATAEXIST,
-                    "error": error_map_EN(RET.DATAEXIST),
+                    "error": error_map_EN[RET.DATAEXIST],
                     "message": "该用户信息已注册",
                 })
 
             data['HotelID'] = int(GenerateID.create_random_id())
+            data['HotelDist'] = 100.0
             data = commons.put_remove_none(**data)
             res = HotelService.add(**data)
             if res.get("code") != RET.OK:
@@ -142,6 +142,8 @@ class OrderFormCheckInResource(Resource):
             if res.get('code') != RET.OK:
                 logger.error(res.get('data').get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
+            orders = res.get("data")
+            userId = orders[0].get("UserID")
             for item in res.get('data'):
                 if Calculate.calc_time_diff_days(datetime.datetime.now(), item.get('ArrivalTime')) > 0:
                     return jsonify({
@@ -149,6 +151,11 @@ class OrderFormCheckInResource(Resource):
                         "message": '未到预定时间',
                     })
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=1)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+
+            res = UserService.update(UserID=userId, IsInRoom=1)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
@@ -179,6 +186,7 @@ class OrderFormCheckOutResource(Resource):
                 logger.error(res.get('data').get('error'))
                 return jsonify(ResponseParser.parse_res(**res))
             orders = res.get('data')
+            userId = orders[0].get('UserID')
             for order in orders:
                 res = RoomService.update(RoomID=order.get('RoomID'), RoomStatus=0)
                 if res.get('code') != RET.OK:
@@ -186,6 +194,11 @@ class OrderFormCheckOutResource(Resource):
                     return jsonify(ResponseParser.parse_res(**res))
 
             res = OrderFormService.update(OrderFormID=data.get('OrderFormID'), OrderFormStatus=2)
+            if res.get("code") != RET.OK:
+                logger.error(res.get("data").get('error'))
+                return jsonify(ResponseParser.parse_res(**res))
+
+            res = UserService.update(UserID=userId, IsInRoom=0)
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get('error'))
                 return jsonify(ResponseParser.parse_res(**res))

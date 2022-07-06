@@ -38,14 +38,14 @@ class UserRegisterResource(Resource):
 
             res = UserService.get(Phone=kwargs.get("Phone"))
             if res.get("code") != RET.OK:
-                logger.error(error_map_EN(res.get("code")))
+                logger.error(error_map_EN[res.get("code")])
                 return jsonify({
                     "code": res.get("code"),
                     "error": res.get("data").get("error"),
                     "message": res.get("message"),
                 })
             if res.get("totalCount") != 0:
-                logger.error(error_map_EN(RET.DATAEXIST))
+                logger.error(error_map_EN[RET.DATAEXIST])
                 return jsonify({
                     "code": RET.DATAEXIST,
                     "error": error_map_EN[RET.DATAEXIST],
