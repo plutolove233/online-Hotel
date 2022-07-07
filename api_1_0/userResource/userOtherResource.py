@@ -112,13 +112,14 @@ class UserQueryHotelResource(Resource):
                 if result.get("code") != RET.OK:
                     logger.error(result.get('data').get('error'))
                     return jsonify(ResponseParser.parse_res(**result))
+                if result.get("totalCount") == 0:
+                    del item
+                    continue
                 roomType = result.get('data')
                 roomType.sort(key=lambda x: x['Price'])
-                item['HighPrice'] = roomType[-1].get('Price')
-                item['LowPrice'] = roomType[0].get('Price')
 
             dataParser = ['Province', 'City', 'Area', 'HotelID', 'HotelName', 'Phone', 'HotelLabels', 'HotelDist',
-                          'HotelPicUrl', 'HighPrice', 'LowPrice']
+                          'HotelPicUrl']
             data = commons.data_screen_by_list(res.get("data"), dataParser)
 
             logger.info(f"query {kwargs.get('Province')}-{kwargs.get('City')}-{kwargs.get('Area')} success")

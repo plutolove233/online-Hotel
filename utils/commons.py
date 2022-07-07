@@ -178,7 +178,8 @@ def data_screen_by_list(data:list, model:list):
     for x in data:
         item = {}
         for y in model:
-            item[y] = x[y]
+            if y in x.keys():
+                item[y] = x[y]
         res.append(item)
     return res
 
