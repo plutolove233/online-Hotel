@@ -52,6 +52,9 @@ class LoginResource(Resource):
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get("error"))
                 return jsonify(ResponseParser.parse_res(**res))
+            if res.get("totalCount") == 0:
+                logger.error("user not register")
+                return jsonify(ResponseParser.parse_no_data(message="用户未注册"))
             user = res.get("data")
             cipher = user[0].get('Password')
             plain = RSAEncryptionDecryption.decrypt(cipher_text=cipher).encode('utf-8').decode()
