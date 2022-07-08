@@ -58,11 +58,11 @@ class UserRegisterResource(Resource):
                 filename = secure_filename(kwargs.get("pic").filename)
                 x = filename.split(".")
                 save_name = f"{kwargs.get('UserID')}.{x[-1]}"
-                kwargs['FaceUrl'] = "http://api.onlineHotel.com/static/user/" + save_name
+                kwargs['FaceUrl'] = "http://120.79.200.146:8000/static/user/" + save_name
                 kwargs.get('pic').save(os.path.join("./static/user", save_name))
             # 删除字典pic字段，避免更新时报错
             else:
-                kwargs['FaceUrl'] = 'http://api.onlineHotel.com/static/user/default.jpg'
+                kwargs['FaceUrl'] = 'http://120.79.200.146:8000/static/user/default.jpg'
             del kwargs['pic']
 
             kwargs = commons.put_remove_none(**kwargs)

@@ -103,7 +103,7 @@ class ChangeHotelInfoResource(Resource):
             filename = secure_filename(data.get("pic").filename)
             x = filename.split(".")
             save_name = f"{temp.userId}.{x[-1]}"
-            data['HotelPicUrl'] = "http://api.onlineHotel.com/static/hotel/" + save_name
+            data['HotelPicUrl'] = "http://120.79.200.146:8000/static/hotel/" + save_name
             data.get('pic').save(os.path.join("./static/hotel", save_name))
             # 删除字典pic字段，避免更新时报错
             del data['pic']
