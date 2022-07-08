@@ -1,27 +1,38 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import axios from './api/axios.js'//引入自己封装的axios
-import 'font-awesome/css/font-awesome.css';
-import ElementUI from 'element-ui';
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+
 import 'element-ui/lib/theme-chalk/index.css';
-
-
-
-
+import 'lib-flexible/flexible.js';
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import App from './App';
+import router from './router';
+import store from '@/store/index.js';
+import axios from 'axios';
+Vue.config.productionTip = false;
 Vue.use(ElementUI);
-Vue.prototype.$axios=axios
-
-Vue.config.productionTip = false
-
-router.beforeEach((to,from,next) =>{
-  store.dispatch('setPath',to.matched)
-  next()
-})
+Vue.prototype.$axios = axios
+Vue.prototype.$store = store
+/* eslint-disable no-new */
 
 new Vue({
+  el: '#app',
   router,
   store,
-  render: h => h(App)
-}).$mount('#app')
+  Vue,
+  components: {
+    App,
+  },
+  watch: {
+  },
+  computed: {
+  },
+  async created() {
+  },
+  methods: {
+  },
+  watch:{
+  },
+  template: '<App/>',
+});
+// eslint-disable-next-line

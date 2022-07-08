@@ -1,32 +1,36 @@
 <template>
   <div id="app">
-    <div class="content">
-        <router-view></router-view>
-    </div>
+    <router-view />
   </div>
 </template>
-
 <script>
 export default {
-  name:'App'
-}
+  name: 'App',
+  components: {
+  },
+  watch: {
+  },
+  data () {
+    return {
+    };
+  },
+  computed: {
+  },
+  created () {
+  },
+  methods: {
+  }
+};
 </script>
 
-<style>
-    html,body{
-      width:100%;
-      height:100%;
-    }
-    *{
-      margin:0;
-      padding:0;
-    }
-    #app{
-      width:100%;
-      height:100%;
-    }
-    #app .content{
-      width:100%;
-      height:100%;
-    }
+<style lang="less" scoped>
+*{
+  margin: 0;
+  padding: 0;
+}
+#app {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(180deg, #c9cece 0%, #eaf2f3 93.75%);
+}
 </style>
