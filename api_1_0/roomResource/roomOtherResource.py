@@ -19,8 +19,8 @@ class AddRoomResource(Resource):
     @TokenRequire
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("RoomNum", location="form", type=str, required=True)
-        parser.add_argument("RoomTypeID", location="form", type=int, required=True)
+        parser.add_argument("RoomNum", location="json", type=str, required=True)
+        parser.add_argument("RoomTypeID", location="json", type=int, required=True)
         try:
             temp = flask.g.user
             if temp.userType == 0:
@@ -60,7 +60,7 @@ class AddRoomResource(Resource):
 
 class GetRoomInfoResource(Resource):
     @classmethod
-    def get(cls):
+    def post(cls):
         parser = reqparse.RequestParser()
         parser.add_argument("RoomID", type=int, location="json", required=True)
         try:

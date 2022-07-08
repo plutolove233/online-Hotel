@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 
 from service.orderFormService import OrderFormService
 from service.roomService import RoomService
+from service.roomTypeService import RoomTypeService
 from service.userService import UserService
 from utils import commons
 from utils.calc_time import Calculate
@@ -28,15 +29,15 @@ class HotelRegisterResource(Resource):
     @classmethod
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("HotelName", location="form", type=str, required=True, help="HotelName参数类型不正确或缺失")
-        parser.add_argument("Phone", location="form", type=str, required=True, help="Phone参数类型不正确或缺失")
-        parser.add_argument("Province", location="form", type=str, required=True, help="Province参数类型不正确或缺失")
-        parser.add_argument("City", location="form", type=str, required=True, help="City参数类型不正确或缺失")
-        parser.add_argument("Area", location="form", type=str, required=True, help="Area参数类型不正确或缺失")
-        parser.add_argument("Address", location="form", type=str, required=True, help="Address参数类型不正确或缺失")
-        parser.add_argument("HotelAccount", location="form", type=str, required=True, help="HotelAccount参数类型不正确或缺失")
-        parser.add_argument("Email", location="form", type=str, required=True, help="Email参数类型不正确或缺失")
-        parser.add_argument("Password", location="form", type=str, required=True, help="Password参数类型不正确或缺失")
+        parser.add_argument("HotelName", location="json", type=str, required=True, help="HotelName参数类型不正确或缺失")
+        parser.add_argument("Phone", location="json", type=str, required=True, help="Phone参数类型不正确或缺失")
+        parser.add_argument("Province", location="json", type=str, required=True, help="Province参数类型不正确或缺失")
+        parser.add_argument("City", location="json", type=str, required=True, help="City参数类型不正确或缺失")
+        parser.add_argument("Area", location="json", type=str, required=True, help="Area参数类型不正确或缺失")
+        parser.add_argument("Address", location="json", type=str, required=True, help="Address参数类型不正确或缺失")
+        parser.add_argument("HotelAccount", location="json", type=str, required=True, help="HotelAccount参数类型不正确或缺失")
+        parser.add_argument("Email", location="json", type=str, required=True, help="Email参数类型不正确或缺失")
+        parser.add_argument("Password", location="json", type=str, required=True, help="Password参数类型不正确或缺失")
         try:
             data = parser.parse_args()
             res = HotelService.get(HotelAccount=data.get("HotelAccount"))
@@ -81,14 +82,14 @@ class ChangeHotelInfoResource(Resource):
     @TokenRequire
     def put(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("HotelName", location="form", type=str, help="HotelName参数类型不正确或缺失")
-        parser.add_argument("Province", location="form", type=str, help="Province参数类型不正确或缺失")
-        parser.add_argument("City", location="form", type=str, help="City参数类型不正确或缺失")
-        parser.add_argument("Area", location="form", type=str, help="Area参数类型不正确或缺失")
-        parser.add_argument("Address", location="form", type=str, help="Address参数类型不正确或缺失")
-        parser.add_argument("Phone", location="form", type=str, help="Phone参数类型不正确或缺失")
-        parser.add_argument("HotelLabels", location="form", type=str, help="HotelLabels参数类型不正确或缺失")
-        parser.add_argument("HotelDist", location="form", type=float, help="HotelDist参数类型不正确或缺失")
+        parser.add_argument("HotelName", location="json", type=str, help="HotelName参数类型不正确或缺失")
+        parser.add_argument("Province", location="json", type=str, help="Province参数类型不正确或缺失")
+        parser.add_argument("City", location="json", type=str, help="City参数类型不正确或缺失")
+        parser.add_argument("Area", location="json", type=str, help="Area参数类型不正确或缺失")
+        parser.add_argument("Address", location="json", type=str, help="Address参数类型不正确或缺失")
+        parser.add_argument("Phone", location="json", type=str, help="Phone参数类型不正确或缺失")
+        parser.add_argument("HotelLabels", location="json", type=str, help="HotelLabels参数类型不正确或缺失")
+        parser.add_argument("HotelDist", location="json", type=float, help="HotelDist参数类型不正确或缺失")
         parser.add_argument("pic", location="files", type=werkzeug.datastructures.FileStorage)
         try:
             temp = flask.g.user
@@ -102,7 +103,7 @@ class ChangeHotelInfoResource(Resource):
             filename = secure_filename(data.get("pic").filename)
             x = filename.split(".")
             save_name = f"{temp.userId}.{x[-1]}"
-            data['HotelPicUrl'] = "http://api.onlineHotel.com/static/hotel/" + save_name
+            data['HotelPicUrl'] = "http://120.79.200.146:8000/static/hotel/" + save_name
             data.get('pic').save(os.path.join("./static/hotel", save_name))
             # 删除字典pic字段，避免更新时报错
             del data['pic']
@@ -214,12 +215,12 @@ class OrderFormCheckOutResource(Resource):
 class QueryHotelOrderFormListResource(Resource):
     @classmethod
     @TokenRequire
-    def get(cls):
+    def post(cls):
         temp = flask.g.user
         if temp.userType == 0:
             return jsonify(ResponseParser.parse_role_error())
         parser = reqparse.RequestParser()
-        parser.add_argument('OrderFormID', type=int, location='form', required=False)
+        parser.add_argument('OrderFormID', type=int, location='json', required=False)
         try:
             data = parser.parse_args()
             res = OrderFormService.get(**data, HotelID=temp.userId)
@@ -244,5 +245,39 @@ class QueryHotelOrderFormListResource(Resource):
 
             logger.info('get order form list success')
             return jsonify(ResponseParser.parse_list_ok('获取宾馆订单信息成功', orderList))
+        except Exception as e:
+            return ResponseParser.parse_unknown_error(error=str(e))
+
+
+class QueryHotelRoomsInfoResource(Resource):
+    @classmethod
+    @TokenRequire
+    def post(cls):
+        parser = reqparse.RequestParser()
+        parser.add_argument("RoomNum", type=str, required=False, location="json")
+        parser.add_argument("RoomStatus", type=int, required=False, location='json')
+        parser.add_argument("RoomTypeName", type=str, required=False, location='json')
+        try:
+            temp = flask.g.user
+            if temp.userType == 0:
+                return jsonify(ResponseParser.parse_role_error())
+            data = parser.parse_args()
+            if data.get("RoomTypeName") is not None:
+                res = RoomTypeService.get(RoomTypeName=data.get('RoomTypeName'), HotelID=temp.userId)
+                if res.get("code") != RET.OK:
+                    logger.error(res.get("data").get("error"))
+                    return jsonify(ResponseParser.parse_res(**res))
+                roomTypes = res.get("data")
+                roomTypeID = roomTypes[0].get("RoomTypeID")
+            else:
+                roomTypeID = None
+            del data['RoomTypeName']
+            res = RoomService.get_all(HotelID=temp.userId, RoomTypeID=roomTypeID, **data)
+            if res.get("code") != RET.OK:
+                logger.error("query all rooms info failed")
+                return jsonify(res)
+
+            logger.info("query all rooms info success")
+            return jsonify(ResponseParser.parse_list_ok("获取所有房间信息成功", res.get("data")))
         except Exception as e:
             return ResponseParser.parse_unknown_error(error=str(e))

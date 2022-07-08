@@ -29,9 +29,9 @@ class LoginResource(Resource):
     def post(cls):
         global res
         parser = reqparse.RequestParser()
-        parser.add_argument("account", type=str, location='form', required=True, help="account参数类型不正确或缺失")
-        parser.add_argument("userType", type=int, location="form", required=True, help="userType参数类型不正确或缺失")
-        parser.add_argument("password", type=str, location="form", required=True, help="password参数类型不正确或缺失")
+        parser.add_argument("account", type=str, location='json', required=True, help="account参数类型不正确或缺失")
+        parser.add_argument("userType", type=int, location="json", required=True, help="userType参数类型不正确或缺失")
+        parser.add_argument("password", type=str, location="json", required=True, help="password参数类型不正确或缺失")
         try:
             data = parser.parse_args()
             if data.get("userType") == 0:
@@ -52,6 +52,9 @@ class LoginResource(Resource):
             if res.get("code") != RET.OK:
                 logger.error(res.get("data").get("error"))
                 return jsonify(ResponseParser.parse_res(**res))
+            if res.get("totalCount") == 0:
+                logger.error("user not register")
+                return jsonify(ResponseParser.parse_no_data(message="用户未注册"))
             user = res.get("data")
             cipher = user[0].get('Password')
             plain = RSAEncryptionDecryption.decrypt(cipher_text=cipher).encode('utf-8').decode()

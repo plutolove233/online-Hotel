@@ -17,6 +17,11 @@ class HotelService(HotelController):
             hotel = cls.get(HotelID=kwargs.get("HotelID"))
             if hotel.get("code") != RET.OK:
                 return hotel
+            if hotel.get("totalCount") == 0:
+                return {
+                    "code": RET.NODATA,
+                    "message": "该酒店信息不存在",
+                }
             screener = ['HotelID', 'HotelName', 'Phone', 'Province', 'City', 'Area', 'Address', 'HotelPicUrl',
                         'HotelLabels']
             hotel = hotel.get("data")
@@ -36,11 +41,18 @@ class HotelService(HotelController):
                 if res.get('code') != RET.OK:
                     return res
                 item['RemainRooms'] = res.get('totalCount')
-            res = {
-                "Hotel": hotel[0],
-                "Remark": remark[0],
-                "RoomType": roomType,
-            }
+            if len(roomType) == 0:
+                res = {
+                    "Hotel": hotel[0],
+                    "flag": 0,
+                }
+            else:
+                res = {
+                    "flag": 1,
+                    "Hotel": hotel[0],
+                    "Remark": remark[0],
+                    "RoomType": roomType,
+                }
             return {
                 "code": RET.OK,
                 "message": "查询成功",

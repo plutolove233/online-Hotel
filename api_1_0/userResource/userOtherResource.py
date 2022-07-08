@@ -28,10 +28,10 @@ class UserRegisterResource(Resource):
     @classmethod
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument('UserName', location='form', required=True, type=str, help='UserName参数类型不正确或缺失')
-        parser.add_argument('Password', location='form', required=True, type=str, help='Password参数类型不正确或缺失')
-        parser.add_argument('Phone', location='form', required=True, type=str, help='Phone参数类型不正确或缺失')
-        parser.add_argument('Email', location='form', required=True, type=str, help='Email参数类型不正确或缺失')
+        parser.add_argument('UserName', location='json', required=True, type=str, help='UserName参数类型不正确或缺失')
+        parser.add_argument('Password', location='json', required=True, type=str, help='Password参数类型不正确或缺失')
+        parser.add_argument('Phone', location='json', required=True, type=str, help='Phone参数类型不正确或缺失')
+        parser.add_argument('Email', location='json', required=True, type=str, help='Email参数类型不正确或缺失')
         parser.add_argument("pic", location="files", type=werkzeug.datastructures.FileStorage, required=False)
         try:
             kwargs = parser.parse_args()
@@ -58,11 +58,11 @@ class UserRegisterResource(Resource):
                 filename = secure_filename(kwargs.get("pic").filename)
                 x = filename.split(".")
                 save_name = f"{kwargs.get('UserID')}.{x[-1]}"
-                kwargs['FaceUrl'] = "http://api.onlineHotel.com/static/user/" + save_name
+                kwargs['FaceUrl'] = "http://120.79.200.146:8000/static/user/" + save_name
                 kwargs.get('pic').save(os.path.join("./static/user", save_name))
             # 删除字典pic字段，避免更新时报错
             else:
-                kwargs['FaceUrl'] = 'http://api.onlineHotel.com/static/user/default.jpg'
+                kwargs['FaceUrl'] = 'http://120.79.200.146:8000/static/user/default.jpg'
             del kwargs['pic']
 
             kwargs = commons.put_remove_none(**kwargs)
@@ -91,9 +91,9 @@ class UserQueryHotelResource(Resource):
     @classmethod
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("Province", location="form", required=True, type=str, help="Province参数类型不正确或缺失")
-        parser.add_argument("City", location="form", required=True, type=str, help="City参数类型不正确或缺失")
-        parser.add_argument("Area", location="form", type=str, required=True, help="Area参数类型不正确或缺失")
+        parser.add_argument("Province", location="json", required=True, type=str, help="Province参数类型不正确或缺失")
+        parser.add_argument("City", location="json", required=True, type=str, help="City参数类型不正确或缺失")
+        parser.add_argument("Area", location="json", type=str, required=True, help="Area参数类型不正确或缺失")
         try:
             kwargs = parser.parse_args()
             kwargs = put_remove_none(**kwargs)
@@ -112,13 +112,14 @@ class UserQueryHotelResource(Resource):
                 if result.get("code") != RET.OK:
                     logger.error(result.get('data').get('error'))
                     return jsonify(ResponseParser.parse_res(**result))
+                if result.get("totalCount") == 0:
+                    del item
+                    continue
                 roomType = result.get('data')
                 roomType.sort(key=lambda x: x['Price'])
-                item['HighPrice'] = roomType[-1].get('Price')
-                item['LowPrice'] = roomType[0].get('Price')
 
             dataParser = ['Province', 'City', 'Area', 'HotelID', 'HotelName', 'Phone', 'HotelLabels', 'HotelDist',
-                          'HotelPicUrl', 'HighPrice', 'LowPrice']
+                          'HotelPicUrl']
             data = commons.data_screen_by_list(res.get("data"), dataParser)
 
             logger.info(f"query {kwargs.get('Province')}-{kwargs.get('City')}-{kwargs.get('Area')} success")
@@ -137,7 +138,7 @@ class UserQueryHotelResource(Resource):
 
 class GetHotelDetailsResource(Resource):
     @classmethod
-    def get(cls):
+    def post(cls):
         parser = reqparse.RequestParser()
         parser.add_argument("HotelID", location="json", type=int, required=True)
         try:
@@ -166,13 +167,13 @@ class SubmitOrderFormResource(Resource):
     @TokenRequire
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("GuestName", type=str, location="form", required=True)
-        parser.add_argument("GuestID", type=str, location='form', required=True)
-        parser.add_argument("GuestPhone", type=str, location='form', required=True)
-        parser.add_argument("ArrivalTime", type=str, location='form', required=True)
-        parser.add_argument("CheckOutTime", type=str, location='form', required=True)
-        parser.add_argument("HotelID", type=int, location="form", required=True)
-        parser.add_argument("RoomTypeID", type=int, location='form', required=True)
+        parser.add_argument("GuestName", type=str, location="json", required=True)
+        parser.add_argument("GuestID", type=str, location='json', required=True)
+        parser.add_argument("GuestPhone", type=str, location='json', required=True)
+        parser.add_argument("ArrivalTime", type=str, location='json', required=True)
+        parser.add_argument("CheckOutTime", type=str, location='json', required=True)
+        parser.add_argument("HotelID", type=int, location="json", required=True)
+        parser.add_argument("RoomTypeID", type=int, location='json', required=True)
         try:
             temp = flask.g.user
             data = parser.parse_args()

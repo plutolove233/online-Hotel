@@ -55,7 +55,7 @@ class AddRemarkResource(Resource):
 
 class GetAllRemarkInfoResource(Resource):
 	@classmethod
-	def get(cls):
+	def post(cls):
 		parser = reqparse.RequestParser()
 		parser.add_argument("HotelID", type=int, location="json", required=False)
 		try:

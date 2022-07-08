@@ -25,10 +25,10 @@ class ChangePwdResource(Resource):
     @classmethod
     def post(cls):
         parser = reqparse.RequestParser()
-        parser.add_argument("Phone", location="form", type=str, required=True, help="Phone参数类型不正确或缺失")
-        parser.add_argument("VerifyCode", location="form", type=str, required=True, help="Verify参数类型不正确或缺失")
-        parser.add_argument("Password", location="form", type=str, required=True, help="Password参数类型不正确或缺失")
-        parser.add_argument("UserType", location="form", type=int, required=True, help="UserType参数类型不正确或缺失")
+        parser.add_argument("Phone", location="json", type=str, required=True, help="Phone参数类型不正确或缺失")
+        parser.add_argument("VerifyCode", location="json", type=str, required=True, help="Verify参数类型不正确或缺失")
+        parser.add_argument("Password", location="json", type=str, required=True, help="Password参数类型不正确或缺失")
+        parser.add_argument("UserType", location="json", type=int, required=True, help="UserType参数类型不正确或缺失")
         try:
             global res
             data = parser.parse_args()

@@ -30,8 +30,8 @@ class SendEmailResource(Resource):
         global res
         try:
             parser = reqparse.RequestParser()
-            parser.add_argument("Phone", location="form", type=str, required=True, help="Phone参数类型不正确或缺失")
-            parser.add_argument("UserType", location="form", type=int, required=True, help="UserType参数类型不正确或缺失")
+            parser.add_argument("Phone", location="json", type=str, required=True, help="Phone参数类型不正确或缺失")
+            parser.add_argument("UserType", location="json", type=int, required=True, help="UserType参数类型不正确或缺失")
             data = parser.parse_args()
             if data.get('UserType') == 0:
                 # --- user ---

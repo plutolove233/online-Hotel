@@ -21,14 +21,14 @@ port = 465
 
 
 def send_email(receiver, verify_code):
-    global smtpObj
+    smtpObj = smtplib.SMTP_SSL("smtp.qq.com", port)
     message = f'修改密码的邮箱验证码为{verify_code}, 有效期为10分钟'
     message = MIMEText(message, 'plain', 'utf-8')
     message['From'] = Header('OnlineHotel', 'utf-8')
     message['To'] = Header(receiver, 'utf-8')
     message['Subject'] = Header('验证码验证', 'utf-8')
     try:
-        smtpObj = smtplib.SMTP_SSL("smtp.qq.com", port)
+
         smtpObj.login(sender, password)
         smtpObj.sendmail(sender, receiver, message.as_string())
         return {
