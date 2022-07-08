@@ -29,9 +29,9 @@ class LoginResource(Resource):
     def post(cls):
         global res
         parser = reqparse.RequestParser()
-        parser.add_argument("account", type=str, location='form', required=True, help="account参数类型不正确或缺失")
-        parser.add_argument("userType", type=int, location="form", required=True, help="userType参数类型不正确或缺失")
-        parser.add_argument("password", type=str, location="form", required=True, help="password参数类型不正确或缺失")
+        parser.add_argument("account", type=str, location='json', required=True, help="account参数类型不正确或缺失")
+        parser.add_argument("userType", type=int, location="json", required=True, help="userType参数类型不正确或缺失")
+        parser.add_argument("password", type=str, location="json", required=True, help="password参数类型不正确或缺失")
         try:
             data = parser.parse_args()
             if data.get("userType") == 0:

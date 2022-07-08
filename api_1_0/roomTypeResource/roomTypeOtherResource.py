@@ -29,12 +29,12 @@ class AddRoomTypeResource(Resource):
                 "message": "用户无法访问该功能",
             })
         parser = reqparse.RequestParser()
-        parser.add_argument("RoomTypeName", location="form", type=str, required=True)
-        parser.add_argument("Square", location="form", type=float, required=True)
-        parser.add_argument("Floor", location="form", type=int, required=True)
-        parser.add_argument("WindowDescription", location="form", type=str, required=True)
-        parser.add_argument("Price", location="form", type=float, required=True)
-        parser.add_argument("RoomTypeBrief", location="form", type=str, required=True)
+        parser.add_argument("RoomTypeName", location="json", type=str, required=True)
+        parser.add_argument("Square", location="json", type=float, required=True)
+        parser.add_argument("Floor", location="json", type=int, required=True)
+        parser.add_argument("WindowDescription", location="json", type=str, required=True)
+        parser.add_argument("Price", location="json", type=float, required=True)
+        parser.add_argument("RoomTypeBrief", location="json", type=str, required=True)
         parser.add_argument("pic", location="files", type=werkzeug.datastructures.FileStorage, required=True)
         try:
             data = parser.parse_args()

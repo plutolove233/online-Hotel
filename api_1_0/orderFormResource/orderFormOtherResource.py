@@ -18,7 +18,7 @@ from utils.response_code import RET
 class GetUserOrderFormInfoResource(Resource):
     @classmethod
     @TokenRequire
-    def get(cls):
+    def post(cls):
         parser = reqparse.RequestParser()
         parser.add_argument('OrderFormID', type=int, location='json', required=True)
         try:
