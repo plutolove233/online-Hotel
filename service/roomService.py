@@ -15,7 +15,7 @@ class RoomService(RoomController):
     def get_room_info(cls, **kwargs):
         try:
             room_info = db.session.query(cls.RoomID, cls.RoomNum, cls.RoomStatus, cls.HotelID,
-                                         RoomType.RoomTypeID, RoomType.Square, RoomType.Floor,
+                                         RoomType.RoomTypeID, RoomType.Square, RoomType.Floor, RoomType.RoomPicUrl,
                                          RoomType.WindowDescription, RoomType.RoomTypeBrief, RoomType.RoomTypeName).filter_by(IsDeleted=0, **kwargs).outerjoin(
                 RoomType, and_(
                     RoomType.RoomTypeID == cls.RoomTypeID
