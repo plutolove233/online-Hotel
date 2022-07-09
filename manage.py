@@ -4,15 +4,9 @@
 """
    入口程序
 """
-import os
-
-import flask
-
 from app import create_app
 from flask_script import Manager, Server
-from flask import request, jsonify
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from utils.response_code import RET
+from flask import request
 
 # 创建flask的app对象
 app = create_app("develop")
