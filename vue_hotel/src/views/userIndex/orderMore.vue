@@ -14,6 +14,8 @@
                 <p>楼层</p>
                 <p>{{currentRoom.Floor}}</p>
             </div>
+
+            
             <div class="room-item">
                 <p>窗户</p>
                 <p>{{currentRoom.WindowDescription}}</p>
