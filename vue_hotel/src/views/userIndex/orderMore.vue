@@ -15,13 +15,15 @@
                 <p>{{currentRoom.Floor}}</p>
             </div>
 
-            
+
             <div class="room-item">
                 <p>窗户</p>
                 <p>{{currentRoom.WindowDescription}}</p>
             </div>
         </div>
     </div>
+
+    
     <div class="right">
       <el-form
         :model="ruleForm"
