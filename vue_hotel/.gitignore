@@ -1,0 +1,9 @@
+node_modules
+testnpm
+package-lock.json
+.idea
+jsconfig.json
+dist
+workspace.xml
+.prettierrc
+
