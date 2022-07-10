@@ -17,8 +17,6 @@
             </div>
 
 
-            
-
             <div class="room-item">
                 <p>窗户</p>
                 <p>{{currentRoom.WindowDescription}}</p>
