@@ -15,6 +15,9 @@
                 <p>{{currentRoom.Floor}}</p>
             </div>
 
+
+
+
             
 
             <div class="room-item">
