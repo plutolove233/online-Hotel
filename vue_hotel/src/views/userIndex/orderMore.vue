@@ -8,8 +8,6 @@
         <div class="room-detail">
             <div class="room-item">
                 <p>面积</p>
-
-
                 <p>{{currentRoom.Square}}</p>
             </div>
             <div class="room-item">
