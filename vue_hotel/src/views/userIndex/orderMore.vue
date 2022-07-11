@@ -9,7 +9,7 @@
             <div class="room-item">
                 <p>面积</p>
 
-                
+
                 <p>{{currentRoom.Square}}</p>
             </div>
             <div class="room-item">
@@ -17,7 +17,6 @@
                 <p>{{currentRoom.Floor}}</p>
             </div>
 
-            
             <div class="room-item">
                 <p>窗户</p>
                 <p>{{currentRoom.WindowDescription}}</p>
