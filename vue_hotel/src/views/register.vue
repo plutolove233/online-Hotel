@@ -5,12 +5,12 @@
       status-icon
       :rules="rules"
       ref="ruleForm"
-      label-width="100px"
+      label-width="300px"
       class="demo-ruleForm"
     >
       <el-form-item label="" prop="type">
     <el-radio-group v-model="ruleForm.type">
-        <el-radio :label="1">用户</el-radio>
+       <el-radio :label="1">用户</el-radio>
         <el-radio :label="2">酒店</el-radio>
     </el-radio-group>
       </el-form-item>
@@ -127,21 +127,28 @@ export default {
     }
   },
 };
+
 </script>
 <style lang="less">
 .register{
+  background-image: url("~@/assets/imgs/豆瓣美队3.jpg");
         box-sizing: border-box;
-        padding: 48px 24px;
+        padding: 350px 100px;
      .demo-ruleForm {
+        /* background-image: url("~@/assets/imgs/wallhaven-j318ey.jpg"); */
         width: 50vw;
         margin: 0 auto;
-        border: 2px solid black;
-        border-radius: 8px;
+        border: 5px solid black;
+        border-radius: 100px;
         .el-form-item {
+          
             .el-form-item__content{
+              
                 .el-input{
                     .el-input__inner{
-                        width: 350px;
+                      
+                        width: 500px;
+                        height: 60px;
                     }
                 }
             }
